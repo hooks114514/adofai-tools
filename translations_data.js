@@ -2,7 +2,7 @@ const TRANSLATIONS = {
     "en": {
         "nav": {
             "star_calculator": "Star Calculator",
-            "level_converter": "Level Converter",
+            "level_converter": "Difficulty Converter",
             "text_splitter": "Split Text into Images"
         },
         "star_calculator": {
@@ -21,7 +21,7 @@ const TRANSLATIONS = {
             "valid_numbers_error": "Please enter valid numbers."
         },
         "level_converter": {
-            "title": "Level Converter",
+            "title": "Difficulty Converter",
             "disclaimer": "ⓘ There is a difference in the difficulty assessment standards between ADOFAI.gg and TUF. Please use it for reference only.",
             "disclaimer_part1": " and ",
             "disclaimer_part2": " have different difficulty assessment standards. Please use for reference only.",
@@ -80,7 +80,7 @@ const TRANSLATIONS = {
     "ko": {
         "nav": {
             "star_calculator": "별 계산기",
-            "level_converter": "레벨 변환기",
+            "level_converter": "난도 변환기",
             "text_splitter": "텍스트 이미지 분할"
         },
         "star_calculator": {
@@ -99,7 +99,7 @@ const TRANSLATIONS = {
             "valid_numbers_error": "올바른 숫자를 입력해주세요."
         },
         "level_converter": {
-            "title": "레벨 변환기",
+            "title": "난도 변환기",
             "disclaimer": "ⓘ ADOFAI.gg와 TUF의 난이도 책정 기준에는 차이가 있습니다. 참고용으로만 사용해 주세요.",
             "disclaimer_part1": "와 ",
             "disclaimer_part2": "의 난이도 책정 기준에는 차이가 있습니다. 참고용으로만 사용해 주세요.",
