@@ -142,25 +142,20 @@ function drawVisualization(angles, isReverse) {
     const rect = canvas.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return;
 
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Use devicePixelRatio for sharp drawing
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
 
+    ctx.clearRect(0, 0, rect.width, rect.height);
 
     const lineColor = isReverse ? '#ef4444' : '#38bdf8';
     const shadowColor = isReverse ? 'rgba(239, 68, 68, 0.8)' : 'rgba(56, 189, 248, 0.8)';
     const pointColor = isReverse ? '#fca5a5' : '#9CDEFC';
 
-
-    const beatAngleElement = document.getElementById('beat-angle-display');
-    if (beatAngleElement) {
-        beatAngleElement.style.color = '#ffffff'; // Pure white for clarity
-        beatAngleElement.style.opacity = '0.95';
-        beatAngleElement.style.textShadow = '0 0 30px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.3)';
-    }
-
     ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 4;
     ctx.shadowColor = shadowColor;
     ctx.shadowBlur = 10;
     ctx.lineJoin = 'round';
@@ -194,16 +189,20 @@ function drawVisualization(angles, isReverse) {
         if (p.y > maxY) maxY = p.y;
     });
 
-    const padding = 60;
+    const padding = 50; // 적절한 여백을 위해 패딩 증가
     const pathWidth = maxX - minX;
     const pathHeight = maxY - minY;
+
     if (pathWidth === 0 && pathHeight === 0) return;
 
-    const scaleX = (canvas.width - padding * 2) / pathWidth;
-    const scaleY = (canvas.height - padding * 2) / pathHeight;
-    const scale = Math.min(scaleX, scaleY);
-    const offsetX = (canvas.width - pathWidth * scale) / 2 - minX * scale;
-    const offsetY = (canvas.height - pathHeight * scale) / 2 - minY * scale;
+    const scale = Math.min(
+        (rect.width - padding * 2) / pathWidth,
+        (rect.height - padding * 2) / pathHeight
+    );
+
+    // 완벽한 중앙 정렬 계산
+    const offsetX = (rect.width - pathWidth * scale) / 2 - minX * scale;
+    const offsetY = (rect.height - pathHeight * scale) / 2 - minY * scale;
 
     ctx.beginPath();
     const startP = points[0];
@@ -215,11 +214,12 @@ function drawVisualization(angles, isReverse) {
     }
     ctx.stroke();
 
+    ctx.shadowBlur = 0; // 점에는 그림자 제외
     ctx.fillStyle = pointColor;
     for (let i = 0; i < points.length; i++) {
         const p = points[i];
         ctx.beginPath();
-        ctx.arc(p.x * scale + offsetX, p.y * scale + offsetY, 3, 0, Math.PI * 2);
+        ctx.arc(p.x * scale + offsetX, p.y * scale + offsetY, 3.5, 0, Math.PI * 2);
         ctx.fill();
     }
 }

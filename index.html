@@ -3,634 +3,648 @@
 
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=1920, initial-scale=1.0, user-scalable=yes">
 	<title>ADOFAI Tools</title>
 	<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-	<div class="nav-tabs">
-		<div style="width: 80px;"></div>
-		<div style="flex: 1;"></div>
-		<button class="nav-tab active" onclick="openTab('new')" data-i18n="nav.level_converter">Level Converter</button>
-		<button class="nav-tab" onclick="openTab('splitter')" data-i18n="nav.text_splitter">Split Text into
-			Images</button>
-		<button class="nav-tab" onclick="openTab('pseudo')" data-i18n="nav.star_calculator">Star Calculator</button>
+	<div class="page-wrapper">
+		<div class="nav-tabs">
+			<div style="width: 80px;"></div>
+			<div style="flex: 1;"></div>
+			<button class="nav-tab active" onclick="openTab('new')" data-i18n="nav.level_converter">Level
+				Converter</button>
+			<button class="nav-tab" onclick="openTab('splitter')" data-i18n="nav.text_splitter">Split Text into
+				Images</button>
+			<button class="nav-tab" onclick="openTab('pseudo')" data-i18n="nav.star_calculator">Star Calculator</button>
 
 
-		<div style="flex: 1;"></div>
+			<div style="flex: 1;"></div>
 
-		<div class="lang-switcher">
-			<button class="lang-btn" data-lang="ko" onclick="setLanguage('ko')">KO</button>
-			<button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
-		</div>
-	</div>
-
-
-	<div id="tab-pseudo" class="tab-content">
-		<div class="main-wrapper">
-			<div class="container">
-				<div class="title-with-help">
-					<h1 data-i18n="star_calculator.title">Star Calculator</h1>
-					<button class="help-btn"
-						onclick="showHelp(t('star_calculator.help_content'), t('star_calculator.help_footer'))">?</button>
-				</div>
-
-				<div class="input-group">
-					<label for="pseudo_count" data-i18n="star_calculator.pseudo_per_round">한 바퀴 당 동시치기 수 (Pseudo Per
-						Round)</label>
-					<div class="input-wrapper">
-						<button class="stepper-btn" onclick="stepValue('pseudo_count', -1)">◀</button>
-						<input type="number" id="pseudo_count" placeholder="Ex: 6" value="6" min="0" max="100"
-							oninput="calculate()">
-						<button class="stepper-btn" onclick="stepValue('pseudo_count', 1)">▶</button>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="pseudo_interval" data-i18n="star_calculator.pseudo_interval">동시치기 간격 (Pseudo
-						Interval)</label>
-					<div class="input-wrapper">
-						<button class="stepper-btn" onclick="stepValue('pseudo_interval', -1)">◀</button>
-						<input type="number" id="pseudo_interval" placeholder="Ex: 4" value="4" min="1" max="100"
-							oninput="calculate()">
-						<button class="stepper-btn" onclick="stepValue('pseudo_interval', 1)">▶</button>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="pseudo_angle" data-i18n="star_calculator.pseudo_angle">동시치기 각도 (Pseudo Angle)</label>
-					<input type="number" id="pseudo_angle" placeholder="Ex: 22.5" value="22.5" oninput="calculate()">
-
-				</div>
-
-				<div class="input-group">
-					<label data-i18n="star_calculator.angle_direction">각도 방향</label>
-					<div class="segmented-control">
-						<button type="button" class="segment-btn active" data-reverse="false"
-							onclick="toggleReverse(false)" data-i18n="star_calculator.outer_angle">외각</button>
-						<button type="button" class="segment-btn" data-reverse="true" onclick="toggleReverse(true)"
-							data-i18n="star_calculator.inner_angle">내각</button>
-					</div>
-					<input type="checkbox" id="pseudo_reverse" style="display: none;">
-				</div>
-
-				<div class="result-area">
-					<div class="result-header">
-						<h2 data-i18n="star_calculator.angle_result">각도 결과</h2>
-					</div>
-					<div id="result">-</div>
-				</div>
-
-				<div class="result-area">
-					<div class="result-header">
-						<h2 data-i18n="star_calculator.adofai_result">.adofai 결과</h2>
-						<button class="copy-btn" onclick="copyResult('result-adofai')" title="Copy to clipboard">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-								<path
-									d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-							</svg>
-						</button>
-					</div>
-					<div id="result-adofai">-</div>
-				</div>
-			</div>
-
-			<div class="visual-container">
-				<span class="visual-label" data-i18n="star_calculator.visualization">Visualization</span>
-				<canvas id="visualCanvas"></canvas>
-				<div id="beat-angle-display" class="beat-angle-display" onclick="copyValue(this.innerText)">-</div>
+			<div class="lang-switcher">
+				<button class="lang-btn" data-lang="ko" onclick="setLanguage('ko')">KO</button>
+				<button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
 			</div>
 		</div>
-	</div>
 
 
-	<div id="tab-new" class="tab-content active">
-		<div class="converter-scroll-wrapper">
+		<div id="tab-pseudo" class="tab-content">
 			<div class="main-wrapper">
-				<div class="container" style="justify-content: center; align-items: center;">
-					<div
-						style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
-						<div class="title-with-help" style="margin-bottom: 30px;">
-							<h1 data-i18n="level_converter.title">Level Converter</h1>
+				<div class="container star-calculator-container">
+					<div class="title-with-help">
+						<h1 data-i18n="star_calculator.title">Star Calculator</h1>
+						<button class="help-btn"
+							onclick="showHelp(t('star_calculator.help_content'), t('star_calculator.help_footer'))">?</button>
+					</div>
+
+					<div class="input-group">
+						<label for="pseudo_count" data-i18n="star_calculator.pseudo_per_round">한 바퀴 당 동시치기 수 (Pseudo Per
+							Round)</label>
+						<div class="input-wrapper">
+							<button class="stepper-btn" onclick="stepValue('pseudo_count', -1)">◀</button>
+							<input type="number" id="pseudo_count" placeholder="Ex: 6" value="6" min="0" max="100"
+								oninput="calculate()">
+							<button class="stepper-btn" onclick="stepValue('pseudo_count', 1)">▶</button>
 						</div>
+					</div>
+
+					<div class="input-group">
+						<label for="pseudo_interval" data-i18n="star_calculator.pseudo_interval">동시치기 간격 (Pseudo
+							Interval)</label>
+						<div class="input-wrapper">
+							<button class="stepper-btn" onclick="stepValue('pseudo_interval', -1)">◀</button>
+							<input type="number" id="pseudo_interval" placeholder="Ex: 4" value="4" min="1" max="100"
+								oninput="calculate()">
+							<button class="stepper-btn" onclick="stepValue('pseudo_interval', 1)">▶</button>
+						</div>
+					</div>
+
+					<div class="input-group">
+						<label for="pseudo_angle" data-i18n="star_calculator.pseudo_angle">동시치기 각도 (Pseudo
+							Angle)</label>
+						<input type="number" id="pseudo_angle" placeholder="Ex: 22.5" value="22.5"
+							oninput="calculate()">
+
+					</div>
+
+					<div class="input-group">
+						<label data-i18n="star_calculator.angle_direction">각도 방향</label>
+						<div class="segmented-control">
+							<button type="button" class="segment-btn active" data-reverse="false"
+								onclick="toggleReverse(false)" data-i18n="star_calculator.outer_angle">외각</button>
+							<button type="button" class="segment-btn" data-reverse="true" onclick="toggleReverse(true)"
+								data-i18n="star_calculator.inner_angle">내각</button>
+						</div>
+						<input type="checkbox" id="pseudo_reverse" style="display: none;">
+					</div>
+
+					<div class="result-area">
+						<div class="result-header">
+							<h2 data-i18n="star_calculator.angle_result">각도 결과</h2>
+						</div>
+						<div id="result">-</div>
+					</div>
+
+					<div class="result-area">
+						<div class="result-header">
+							<h2 data-i18n="star_calculator.adofai_result">.adofai 결과</h2>
+							<button class="copy-btn" onclick="copyResult('result-adofai')" title="Copy to clipboard">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+									<path
+										d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+								</svg>
+							</button>
+						</div>
+						<div id="result-adofai">-</div>
+					</div>
+				</div>
+
+				<div class="visual-container">
+					<span class="visual-label" data-i18n="star_calculator.visualization">Visualization</span>
+					<canvas id="visualCanvas"></canvas>
+					<div id="beat-angle-display" class="beat-angle-display" onclick="copyValue(this.innerText)">-</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div id="tab-new" class="tab-content active">
+			<div class="converter-scroll-wrapper">
+				<div class="main-wrapper">
+					<div class="container level-converter-container"
+						style="justify-content: center; align-items: center;">
 						<div
-							style="width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center;">
-
-							<div class="converter-row" style="width: 100%;">
-								<label>ADOFAI.gg</label>
-								<div class="input-pair">
-									<select id="gg_list"></select>
-									<input type="text" id="gg" placeholder="ADOFAI.gg">
-								</div>
+							style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
+							<div class="title-with-help" style="margin-bottom: 30px;">
+								<h1 data-i18n="level_converter.title">Level Converter</h1>
 							</div>
+							<div
+								style="width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center;">
 
-							<div class="converter-row" style="width: 100%;">
-								<label>TUF</label>
-								<div class="input-pair">
-
-									<div class="custom-select" id="tuf_custom_select"
-										onclick="toggleDropdown('tuf_custom_select', event)">
-										<div class="selected-option" id="tuf_selected_img">
-											<span>-</span>
-										</div>
-										<div class="options-container" id="tuf_options">
-
-										</div>
+								<div class="converter-row" style="width: 100%;">
+									<label>ADOFAI.gg</label>
+									<div class="input-pair">
+										<select id="gg_list"></select>
+										<input type="text" id="gg" placeholder="ADOFAI.gg">
 									</div>
-
-									<select id="tuf_list" style="display:none;"></select>
-
-									<input type="text" id="tuf" placeholder="TUF">
 								</div>
-							</div>
 
-							<div class="converter-row" style="width: 100%;">
-								<label>TUF (Legacy)</label>
-								<div class="input-pair">
+								<div class="converter-row" style="width: 100%;">
+									<label>TUF</label>
+									<div class="input-pair">
 
-									<div class="custom-select" id="legacy_custom_select"
-										onclick="toggleDropdown('legacy_custom_select', event)">
-										<div class="selected-option" id="legacy_selected_img">
-											<span>-</span>
+										<div class="custom-select" id="tuf_custom_select"
+											onclick="toggleDropdown('tuf_custom_select', event)">
+											<div class="selected-option" id="tuf_selected_img">
+												<span>-</span>
+											</div>
+											<div class="options-container" id="tuf_options">
+
+											</div>
 										</div>
-										<div class="options-container" id="legacy_options">
 
-										</div>
+										<select id="tuf_list" style="display:none;"></select>
+
+										<input type="text" id="tuf" placeholder="TUF">
 									</div>
-									<select id="legacy_list" style="display:none;"></select>
-
-									<input type="text" id="tuf_legacy" placeholder="TUF (Legacy)">
 								</div>
-								<br>
-								<p class="small-text disclaimer-text">ⓘ <a href="https://adofai.gg"
-										target="_blank">ADOFAI.gg</a><span
-										data-i18n="level_converter.disclaimer_part1">와</span> <a
-										href="https://tuforums.com" target="_blank">TUF</a><span
-										data-i18n="level_converter.disclaimer_part2">의 난이도 책정
-										기준에는 차이가 있습니다. 참고용으로만 사용해 주세요.</span></p>
+
+								<div class="converter-row" style="width: 100%;">
+									<label>TUF (Legacy)</label>
+									<div class="input-pair">
+
+										<div class="custom-select" id="legacy_custom_select"
+											onclick="toggleDropdown('legacy_custom_select', event)">
+											<div class="selected-option" id="legacy_selected_img">
+												<span>-</span>
+											</div>
+											<div class="options-container" id="legacy_options">
+
+											</div>
+										</div>
+										<select id="legacy_list" style="display:none;"></select>
+
+										<input type="text" id="tuf_legacy" placeholder="TUF (Legacy)">
+									</div>
+									<br>
+									<p class="small-text disclaimer-text">ⓘ <a href="https://adofai.gg"
+											target="_blank">ADOFAI.gg</a><span
+											data-i18n="level_converter.disclaimer_part1">와</span> <a
+											href="https://tuforums.com" target="_blank">TUF</a><span
+											data-i18n="level_converter.disclaimer_part2">의 난이도 책정
+											기준에는 차이가 있습니다. 참고용으로만 사용해 주세요.</span></p>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="footer-credits">
-						<p class="small-text"><a href="https://github.com/T21C/T21C-assets" target="_blank">The
-								Universal
-								Forums
-								Assets</a> © 2022-2024 by <a href="https://tuforums.com/" target="_blank">the Universal
-								Forums</a> is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"
-								target="_blank">the CC BY 4.0 license</a>.</p>
-						<p class="small-text" data-i18n="level_converter.credits_pgu">Credit for PGU icons goes to Sean
-							Lenard B. (@seanlenardb)</p>
-						<p class="small-text" data-i18n="level_converter.credits_gradient">Credit for gradient colors
-							goes
-							to Sean Lenard B. (@seanlenardb) & BadWolf
-							(@badwolf_100)</p>
-						<p class="small-text" data-i18n="level_converter.credits_icons">Credit for all icons goes to TEO
-							(@TEO_72)</p>
-						<p class="small-text" data-i18n="level_converter.credits_extension">Gradient by Unofficial
-							forums,
-							extension by TEO (@TEO_72)</p>
+						<div class="footer-credits">
+							<p class="small-text"><a href="https://github.com/T21C/T21C-assets" target="_blank">The
+									Universal
+									Forums
+									Assets</a> © 2022-2024 by <a href="https://tuforums.com/" target="_blank">the
+									Universal
+									Forums</a> is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"
+									target="_blank">the CC BY 4.0 license</a>.</p>
+							<p class="small-text" data-i18n="level_converter.credits_pgu">Credit for PGU icons goes to
+								Sean
+								Lenard B. (@seanlenardb)</p>
+							<p class="small-text" data-i18n="level_converter.credits_gradient">Credit for gradient
+								colors
+								goes
+								to Sean Lenard B. (@seanlenardb) & BadWolf
+								(@badwolf_100)</p>
+							<p class="small-text" data-i18n="level_converter.credits_icons">Credit for all icons goes to
+								TEO
+								(@TEO_72)</p>
+							<p class="small-text" data-i18n="level_converter.credits_extension">Gradient by Unofficial
+								forums,
+								extension by TEO (@TEO_72)</p>
 
-					</div>
-				</div>
-			</div>
-
-			<div class="difficulty-info-container">
-				<div class="title-with-help">
-					<h2 data-i18n="difficulty_info.title">난도 정보</h2>
-				</div>
-				<div class="difficulty-base-selector" id="difficulty-base-selector">
-					<button type="button" class="segment-btn active" data-base="gg">ADOFAI.gg</button>
-					<button type="button" class="segment-btn" data-base="tuf">TUF</button>
-					<button type="button" class="segment-btn" data-base="legacy">TUF (Legacy)</button>
-				</div>
-				<div id="difficulty-table-wrapper" class="difficulty-table-wrapper"></div>
-			</div>
-		</div>
-	</div>
-
-
-	<div id="tab-splitter" class="tab-content">
-		<div class="main-wrapper splitter-wrapper">
-			<div class="container">
-				<div class="title-with-help">
-					<h1 data-i18n="text_splitter.input_title">Input</h1>
-				</div>
-
-				<div class="input-group">
-					<label for="splitter_text" data-i18n="text_splitter.enter_text">Enter Text</label>
-					<div style="display: flex; flex-direction: column; gap: 10px;">
-						<textarea id="splitter_text" placeholder="Ex: Hello World" rows="8"
-							onkeydown="handleSplitterKeyDown(event)"
-							data-i18n-placeholder="text_splitter.enter_text_placeholder"></textarea>
-						<div class="split-buttons-row">
-							<button class="action-btn" onclick="addSplitTag()" title="Enter"
-								data-i18n="text_splitter.input_btn">Input</button>
-							<button class="action-btn secondary" onclick="splitBy('char')" title="Alt+1"
-								data-i18n="text_splitter.split_char">글자 분할</button>
-							<button class="action-btn secondary" onclick="splitBy('word')" title="Alt+2"
-								data-i18n="text_splitter.split_word">어절 분할</button>
-							<button class="action-btn secondary" onclick="splitBy('line')" title="Alt+3"
-								data-i18n="text_splitter.split_line">줄 분할</button>
 						</div>
 					</div>
 				</div>
 
-				<div class="input-group" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
-					<div
-						style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-						<label style="margin-bottom: 0;" data-i18n="text_splitter.input_text_label">Input Text</label>
-						<button class="action-btn secondary" onclick="clearAllTags()"
-							style="padding: 4px; font-size: 0.75rem; width: 24px; height: 24px; min-width: unset; flex: none; border-radius: 6px; display: flex; align-items: center; justify-content: center;"
-							title="Clear all tags" data-i18n-title="text_splitter.clear_all_tags">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"
-								fill="currentColor">
-								<path
-									d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
-							</svg>
-						</button>
+				<div class="difficulty-info-container">
+					<div class="title-with-help">
+						<h2 data-i18n="difficulty_info.title">난도 정보</h2>
 					</div>
-					<div id="splitter_tags_container" class="tags-display-area" style="flex: 1; max-height: none;">
-						<span class="placeholder-text" data-i18n="text_splitter.no_tags">No tags added yet.</span>
+					<div class="difficulty-base-selector" id="difficulty-base-selector">
+						<button type="button" class="segment-btn active" data-base="gg">ADOFAI.gg</button>
+						<button type="button" class="segment-btn" data-base="tuf">TUF</button>
+						<button type="button" class="segment-btn" data-base="legacy">TUF (Legacy)</button>
 					</div>
+					<div id="difficulty-table-wrapper" class="difficulty-table-wrapper"></div>
 				</div>
-			</div>
-
-			<div class="container">
-				<div class="title-with-help">
-					<h1 data-i18n="text_splitter.options_title">Options</h1>
-				</div>
-
-				<div class="converter-row" style="display: flex; gap: 10px;">
-					<div style="flex: 1;">
-						<label for="splitter_width"
-							style="display: flex; justify-content: space-between; align-items: center;">
-							<span data-i18n="text_splitter.width">Width</span>
-							<button onclick="autoFitWidth()" class="action-btn secondary"
-								style="padding: 2px 6px; font-size: 0.6rem; height: auto; min-width: 0; width: auto; flex: none; margin-bottom: 0; line-height: 1.2;"
-								title="Fit width to largest text" data-i18n="text_splitter.fit">Fit</button>
-						</label>
-						<input type="number" id="splitter_width" value="500" oninput="updateSplitterPreview()">
-					</div>
-					<div style="flex: 1;">
-						<label for="splitter_height" data-i18n="text_splitter.height">Height</label>
-						<input type="number" id="splitter_height" value="500" oninput="updateSplitterPreview()">
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="splitter_prefix" data-i18n="text_splitter.filename_prefix">Filename Prefix:</label>
-					<input type="text" id="splitter_prefix" placeholder="Ex: 1_" oninput="updateSplitterPreview()"
-						data-i18n-placeholder="text_splitter.filename_prefix_placeholder">
-				</div>
-
-				<div class="input-group">
-					<label data-i18n="text_splitter.font_label">Font (.ttf)</label>
-					<div class="input-wrapper">
-						<label for="splitter_font" class="file-input-label" data-i18n="text_splitter.select_font">Select
-							Font File</label>
-						<input type="file" id="splitter_font" accept=".ttf" style="display: none;"
-							onchange="handleFontUpload(this)">
-						<span id="font_name_display" class="small-text" style="margin-left: 10px; opacity: 0.7;"
-							data-i18n="text_splitter.no_font">No font
-							selected</span>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label data-i18n="text_splitter.text_color_opacity">Text Color & Opacity</label>
-					<div style="display: flex; gap: 10px; align-items: center;">
-						<input type="color" id="splitter_color" value="#ffffff" oninput="updateSplitterPreview()"
-							style="width: 50px; padding: 0; height: 38px; border: none; background: transparent; cursor: pointer;">
-						<input type="range" id="splitter_text_opacity" min="0" max="100" value="100"
-							oninput="updateSplitterPreview()" style="flex: 1;" title="Opacity">
-						<span id="text_opacity_display" class="small-text"
-							style="width: 40px; text-align: right;">100%</span>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label data-i18n="text_splitter.bg_color_opacity">Background Color & Opacity</label>
-					<div style="display: flex; gap: 10px; align-items: center;">
-						<input type="color" id="splitter_bg_color" value="#000000" oninput="updateSplitterPreview()"
-							style="width: 50px; padding: 0; height: 38px; border: none; background: transparent; cursor: pointer;">
-						<input type="range" id="splitter_bg_opacity" min="0" max="100" value="0"
-							oninput="updateSplitterPreview()" style="flex: 1;" title="Opacity">
-						<span id="bg_opacity_display" class="small-text"
-							style="width: 40px; text-align: right;">0%</span>
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="splitter_scale" data-i18n="text_splitter.text_size_scale">Text Size Scale</label>
-					<div class="input-wrapper">
-						<input type="range" id="splitter_scale" min="0.1" max="5" step="0.1" value="1"
-							oninput="syncSplitterScale(this, 'range-scale')" style="flex: 1;">
-						<input type="number" id="splitter_scale_num" value="1" step="0.1"
-							oninput="syncSplitterScale(this, 'num-scale')" style="width: 50px;">
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="splitter_x" data-i18n="text_splitter.x_position">X Position</label>
-					<div class="input-wrapper">
-						<input type="range" id="splitter_x" min="-500" max="500" value="0"
-							oninput="syncSplitterScale(this, 'range-x')" style="flex: 1;">
-						<input type="number" id="splitter_x_num" value="0" oninput="syncSplitterScale(this, 'num-x')"
-							style="width: 50px;">
-					</div>
-				</div>
-
-				<div class="input-group">
-					<label for="splitter_y" data-i18n="text_splitter.y_position">Y Position</label>
-					<div class="input-wrapper">
-						<input type="range" id="splitter_y" min="-500" max="500" value="0"
-							oninput="syncSplitterScale(this, 'range-y')" style="flex: 1;">
-						<input type="number" id="splitter_y_num" value="0" oninput="syncSplitterScale(this, 'num-y')"
-							style="width: 50px;">
-					</div>
-				</div>
-
-				<div class="converter-row" style="display: flex; gap: 10px;">
-					<div style="flex: 1;">
-						<label for="splitter_zip_filename" data-i18n="text_splitter.zip_filename">ZIP Filename</label>
-						<input type="text" id="splitter_zip_filename" placeholder="Ex: split_texts" value="split_texts"
-							data-i18n-placeholder="text_splitter.zip_filename_placeholder">
-					</div>
-					<div style="flex: 1;">
-						<label for="splitter_format" data-i18n="text_splitter.format">Format</label>
-						<select id="splitter_format">
-							<option value="image/png">PNG</option>
-							<option value="image/jpeg">JPG</option>
-							<option value="image/webp">WEBP</option>
-						</select>
-					</div>
-				</div>
-
-				<div class="input-group" style="margin-top: 8px;">
-					<button class="nav-tab active" style="width: 100%;" onclick="generateSplitterZip()"
-						data-i18n="text_splitter.generate_btn">Generate Images
-						(.zip)</button>
-				</div>
-				<div id="splitter_status" class="small-text" style="text-align: center; margin-top: 10px;"></div>
-			</div>
-
-			<div class="visual-container preview-col"
-				style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; padding: 20px;">
-				<span class="visual-label" data-i18n="text_splitter.preview_title">Preview</span>
-				<div class="preview-canvas-wrapper"
-					style="border: 2px dashed rgba(255,255,255,0.2); box-shadow: 0 0 20px rgba(0,0,0,0.5);">
-					<canvas id="splitterCanvas"></canvas>
-				</div>
-				<div id="preview_warning" class="small-text"
-					style="display: none; color: #ef4444; margin-top: 10px; font-weight: 600;"></div>
-				<div id="preview_filename" class="small-text" style="margin-top: 15px; font-family: monospace;">-</div>
 			</div>
 		</div>
-	</div>
 
-	<div id="helpModal" class="modal" onclick="closeModalOutside(event)">
-		<div class="modal-content" onclick="event.stopPropagation()">
-			<span class="close-btn" onclick="closeHelp()">&times;</span>
-			<div id="helpTextContent">text</div>
-			<div id="modalInputContainer"></div>
-			<div id="helpFooter"
-				style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 0.85em; opacity: 0.7; text-align: center;">
+
+		<div id="tab-splitter" class="tab-content">
+			<div class="main-wrapper splitter-wrapper">
+				<div class="container text-splitter-container">
+					<div class="title-with-help">
+						<h1 data-i18n="text_splitter.input_title">Input</h1>
+					</div>
+
+					<div class="input-group">
+						<label for="splitter_text" data-i18n="text_splitter.enter_text">Enter Text</label>
+						<div style="display: flex; flex-direction: column; gap: 10px;">
+							<textarea id="splitter_text" placeholder="Ex: Hello World" rows="8"
+								onkeydown="handleSplitterKeyDown(event)"
+								data-i18n-placeholder="text_splitter.enter_text_placeholder"></textarea>
+							<div class="split-buttons-row">
+								<button class="action-btn" onclick="addSplitTag()" title="Enter"
+									data-i18n="text_splitter.input_btn">Input</button>
+								<button class="action-btn secondary" onclick="splitBy('char')" title="Alt+1"
+									data-i18n="text_splitter.split_char">글자 분할</button>
+								<button class="action-btn secondary" onclick="splitBy('word')" title="Alt+2"
+									data-i18n="text_splitter.split_word">어절 분할</button>
+								<button class="action-btn secondary" onclick="splitBy('line')" title="Alt+3"
+									data-i18n="text_splitter.split_line">줄 분할</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="input-group" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+						<div
+							style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+							<label style="margin-bottom: 0;" data-i18n="text_splitter.input_text_label">Input
+								Text</label>
+							<button class="action-btn secondary" onclick="clearAllTags()"
+								style="padding: 4px; font-size: 0.75rem; width: 24px; height: 24px; min-width: unset; flex: none; border-radius: 6px; display: flex; align-items: center; justify-content: center;"
+								title="Clear all tags" data-i18n-title="text_splitter.clear_all_tags">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"
+									fill="currentColor">
+									<path
+										d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+								</svg>
+							</button>
+						</div>
+						<div id="splitter_tags_container" class="tags-display-area" style="flex: 1; max-height: none;">
+							<span class="placeholder-text" data-i18n="text_splitter.no_tags">No tags added yet.</span>
+						</div>
+					</div>
+				</div>
+
+				<div class="container">
+					<div class="title-with-help">
+						<h1 data-i18n="text_splitter.options_title">Options</h1>
+					</div>
+
+					<div class="converter-row" style="display: flex; gap: 10px;">
+						<div style="flex: 1;">
+							<label for="splitter_width"
+								style="display: flex; justify-content: space-between; align-items: center;">
+								<span data-i18n="text_splitter.width">Width</span>
+								<button onclick="autoFitWidth()" class="action-btn secondary"
+									style="padding: 2px 6px; font-size: 0.6rem; height: auto; min-width: 0; width: auto; flex: none; margin-bottom: 0; line-height: 1.2;"
+									title="Fit width to largest text" data-i18n="text_splitter.fit">Fit</button>
+							</label>
+							<input type="number" id="splitter_width" value="500" oninput="updateSplitterPreview()">
+						</div>
+						<div style="flex: 1;">
+							<label for="splitter_height" data-i18n="text_splitter.height">Height</label>
+							<input type="number" id="splitter_height" value="500" oninput="updateSplitterPreview()">
+						</div>
+					</div>
+
+					<div class="input-group">
+						<label for="splitter_prefix" data-i18n="text_splitter.filename_prefix">Filename Prefix:</label>
+						<input type="text" id="splitter_prefix" placeholder="Ex: 1_" oninput="updateSplitterPreview()"
+							data-i18n-placeholder="text_splitter.filename_prefix_placeholder">
+					</div>
+
+					<div class="input-group">
+						<label data-i18n="text_splitter.font_label">Font (.ttf)</label>
+						<div class="input-wrapper">
+							<label for="splitter_font" class="file-input-label"
+								data-i18n="text_splitter.select_font">Select
+								Font File</label>
+							<input type="file" id="splitter_font" accept=".ttf" style="display: none;"
+								onchange="handleFontUpload(this)">
+							<span id="font_name_display" class="small-text" style="margin-left: 10px; opacity: 0.7;"
+								data-i18n="text_splitter.no_font">No font
+								selected</span>
+						</div>
+					</div>
+
+					<div class="input-group">
+						<label data-i18n="text_splitter.text_color_opacity">Text Color & Opacity</label>
+						<div style="display: flex; gap: 10px; align-items: center;">
+							<input type="color" id="splitter_color" value="#ffffff" oninput="updateSplitterPreview()"
+								style="width: 50px; padding: 0; height: 38px; border: none; background: transparent; cursor: pointer;">
+							<input type="range" id="splitter_text_opacity" min="0" max="100" value="100"
+								oninput="updateSplitterPreview()" style="flex: 1;" title="Opacity">
+							<span id="text_opacity_display" class="small-text"
+								style="width: 40px; text-align: right;">100%</span>
+						</div>
+					</div>
+
+					<div class="input-group">
+						<label data-i18n="text_splitter.bg_color_opacity">Background Color & Opacity</label>
+						<div style="display: flex; gap: 10px; align-items: center;">
+							<input type="color" id="splitter_bg_color" value="#000000" oninput="updateSplitterPreview()"
+								style="width: 50px; padding: 0; height: 38px; border: none; background: transparent; cursor: pointer;">
+							<input type="range" id="splitter_bg_opacity" min="0" max="100" value="0"
+								oninput="updateSplitterPreview()" style="flex: 1;" title="Opacity">
+							<span id="bg_opacity_display" class="small-text"
+								style="width: 40px; text-align: right;">0%</span>
+						</div>
+					</div>
+
+					<div class="input-group">
+						<label for="splitter_scale" data-i18n="text_splitter.text_size_scale">Text Size Scale</label>
+						<div class="input-wrapper">
+							<input type="range" id="splitter_scale" min="0.1" max="5" step="0.1" value="1"
+								oninput="syncSplitterScale(this, 'range-scale')" style="flex: 1;">
+							<input type="number" id="splitter_scale_num" value="1" step="0.1"
+								oninput="syncSplitterScale(this, 'num-scale')" style="width: 50px;">
+						</div>
+					</div>
+
+					<div class="input-group">
+						<label for="splitter_x" data-i18n="text_splitter.x_position">X Position</label>
+						<div class="input-wrapper">
+							<input type="range" id="splitter_x" min="-500" max="500" value="0"
+								oninput="syncSplitterScale(this, 'range-x')" style="flex: 1;">
+							<input type="number" id="splitter_x_num" value="0"
+								oninput="syncSplitterScale(this, 'num-x')" style="width: 50px;">
+						</div>
+					</div>
+
+					<div class="input-group">
+						<label for="splitter_y" data-i18n="text_splitter.y_position">Y Position</label>
+						<div class="input-wrapper">
+							<input type="range" id="splitter_y" min="-500" max="500" value="0"
+								oninput="syncSplitterScale(this, 'range-y')" style="flex: 1;">
+							<input type="number" id="splitter_y_num" value="0"
+								oninput="syncSplitterScale(this, 'num-y')" style="width: 50px;">
+						</div>
+					</div>
+
+					<div class="converter-row" style="display: flex; gap: 10px;">
+						<div style="flex: 1;">
+							<label for="splitter_zip_filename" data-i18n="text_splitter.zip_filename">ZIP
+								Filename</label>
+							<input type="text" id="splitter_zip_filename" placeholder="Ex: split_texts"
+								value="split_texts" data-i18n-placeholder="text_splitter.zip_filename_placeholder">
+						</div>
+						<div style="flex: 1;">
+							<label for="splitter_format" data-i18n="text_splitter.format">Format</label>
+							<select id="splitter_format">
+								<option value="image/png">PNG</option>
+								<option value="image/jpeg">JPG</option>
+								<option value="image/webp">WEBP</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="input-group" style="margin-top: 8px;">
+						<button class="nav-tab active" style="width: 100%;" onclick="generateSplitterZip()"
+							data-i18n="text_splitter.generate_btn">Generate Images
+							(.zip)</button>
+					</div>
+					<div id="splitter_status" class="small-text" style="text-align: center; margin-top: 10px;"></div>
+				</div>
+
+				<div class="visual-container preview-col"
+					style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; padding: 20px;">
+					<span class="visual-label" data-i18n="text_splitter.preview_title">Preview</span>
+					<div class="preview-canvas-wrapper"
+						style="border: 2px dashed rgba(255,255,255,0.2); box-shadow: 0 0 20px rgba(0,0,0,0.5);">
+						<canvas id="splitterCanvas"></canvas>
+					</div>
+					<div id="preview_warning" class="small-text"
+						style="display: none; color: #ef4444; margin-top: 10px; font-weight: 600;"></div>
+					<div id="preview_filename" class="small-text" style="margin-top: 15px; font-family: monospace;">-
+					</div>
+				</div>
 			</div>
-			<div id="modalActionFooter" class="modal-footer" style="display: none;"></div>
 		</div>
-	</div>
 
-	<script>
-		let currentModalResolve = null;
+		<div id="helpModal" class="modal" onclick="closeModalOutside(event)">
+			<div class="modal-content" onclick="event.stopPropagation()">
+				<span class="close-btn" onclick="closeHelp()">&times;</span>
+				<div id="helpTextContent">text</div>
+				<div id="modalInputContainer"></div>
+				<div id="helpFooter"
+					style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 0.85em; opacity: 0.7; text-align: center;">
+				</div>
+				<div id="modalActionFooter" class="modal-footer" style="display: none;"></div>
+			</div>
+		</div>
 
-		function showHelp(content, footer) {
-			const modal = document.getElementById('helpModal');
-			const helpText = document.getElementById('helpTextContent');
-			const helpFooter = document.getElementById('helpFooter');
-			const inputContainer = document.getElementById('modalInputContainer');
-			const actionFooter = document.getElementById('modalActionFooter');
+		<script>
+			let currentModalResolve = null;
 
-			if (helpText) {
-				let formattedContent = (content || 'text')
-					.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-					.replace(/\n/g, '<br>');
-				helpText.innerHTML = formattedContent;
-			}
-
-			if (inputContainer) inputContainer.innerHTML = '';
-			if (actionFooter) actionFooter.style.display = 'none';
-
-			if (helpFooter) {
-				helpFooter.innerHTML = footer || '';
-				helpFooter.style.display = footer ? 'block' : 'none';
-			}
-
-			if (modal) modal.style.display = 'flex';
-		}
-
-		function showConfirm(message) {
-			return new Promise((resolve) => {
+			function showHelp(content, footer) {
 				const modal = document.getElementById('helpModal');
 				const helpText = document.getElementById('helpTextContent');
 				const helpFooter = document.getElementById('helpFooter');
 				const inputContainer = document.getElementById('modalInputContainer');
 				const actionFooter = document.getElementById('modalActionFooter');
 
-				helpText.innerHTML = message;
-				if (helpFooter) helpFooter.style.display = 'none';
+				if (helpText) {
+					let formattedContent = (content || 'text')
+						.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+						.replace(/\n/g, '<br>');
+					helpText.innerHTML = formattedContent;
+				}
+
 				if (inputContainer) inputContainer.innerHTML = '';
+				if (actionFooter) actionFooter.style.display = 'none';
 
-				const handleKey = (e) => {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-						cleanup();
-						resolve(true);
-					} else if (e.key === 'Escape') {
-						e.preventDefault();
-						cleanup();
-						resolve(false);
-					}
-				};
-
-				const cleanup = () => {
-					document.removeEventListener('keydown', handleKey);
-					closeHelp();
-				};
-
-				document.addEventListener('keydown', handleKey);
-
-				const safeResolve = (val) => {
-					document.removeEventListener('keydown', handleKey);
-					closeHelp();
-					resolve(val);
-				};
-
-				if (actionFooter) {
-					actionFooter.innerHTML = '';
-					actionFooter.style.display = 'flex';
-
-					const cancelBtn = document.createElement('button');
-					cancelBtn.className = 'modal-btn secondary';
-					cancelBtn.innerText = t('modal.no');
-					cancelBtn.onclick = () => { safeResolve(false); };
-
-					const confirmBtn = document.createElement('button');
-					confirmBtn.className = 'modal-btn primary';
-					confirmBtn.innerText = t('modal.yes');
-					confirmBtn.onclick = () => { safeResolve(true); };
-
-					actionFooter.appendChild(cancelBtn);
-					actionFooter.appendChild(confirmBtn);
+				if (helpFooter) {
+					helpFooter.innerHTML = footer || '';
+					helpFooter.style.display = footer ? 'block' : 'none';
 				}
 
 				if (modal) modal.style.display = 'flex';
-			});
-		}
+			}
 
-		function showAlert(message) {
-			return new Promise((resolve) => {
-				const modal = document.getElementById('helpModal');
-				const helpText = document.getElementById('helpTextContent');
-				const helpFooter = document.getElementById('helpFooter');
-				const inputContainer = document.getElementById('modalInputContainer');
-				const actionFooter = document.getElementById('modalActionFooter');
+			function showConfirm(message) {
+				return new Promise((resolve) => {
+					const modal = document.getElementById('helpModal');
+					const helpText = document.getElementById('helpTextContent');
+					const helpFooter = document.getElementById('helpFooter');
+					const inputContainer = document.getElementById('modalInputContainer');
+					const actionFooter = document.getElementById('modalActionFooter');
 
-				helpText.innerHTML = message;
-				if (helpFooter) helpFooter.style.display = 'none';
-				if (inputContainer) inputContainer.innerHTML = '';
+					helpText.innerHTML = message;
+					if (helpFooter) helpFooter.style.display = 'none';
+					if (inputContainer) inputContainer.innerHTML = '';
 
-				const cleanup = () => {
-					document.removeEventListener('keydown', handleKey);
-					closeHelp();
-				};
-
-				const handleKey = (e) => {
-					if (e.key === 'Enter' || e.key === 'Escape') {
-						e.preventDefault();
-						cleanup();
-						resolve();
-					}
-				};
-
-				document.addEventListener('keydown', handleKey);
-
-				if (actionFooter) {
-					actionFooter.innerHTML = '';
-					actionFooter.style.display = 'flex';
-
-					const confirmBtn = document.createElement('button');
-					confirmBtn.className = 'modal-btn primary';
-					confirmBtn.innerText = t('modal.ok');
-					confirmBtn.onclick = () => {
-						cleanup();
-						resolve();
+					const handleKey = (e) => {
+						if (e.key === 'Enter') {
+							e.preventDefault();
+							cleanup();
+							resolve(true);
+						} else if (e.key === 'Escape') {
+							e.preventDefault();
+							cleanup();
+							resolve(false);
+						}
 					};
 
-					actionFooter.appendChild(confirmBtn);
-				}
+					const cleanup = () => {
+						document.removeEventListener('keydown', handleKey);
+						closeHelp();
+					};
 
-				if (modal) modal.style.display = 'flex';
-			});
-		}
+					document.addEventListener('keydown', handleKey);
 
-		function showPrompt(message, defaultValue = '', isMultiline = false) {
-			return new Promise((resolve) => {
-				const modal = document.getElementById('helpModal');
-				const helpText = document.getElementById('helpTextContent');
-				const helpFooter = document.getElementById('helpFooter');
-				const inputContainer = document.getElementById('modalInputContainer');
-				const actionFooter = document.getElementById('modalActionFooter');
-
-				helpText.innerHTML = message;
-				if (helpFooter) helpFooter.style.display = 'none';
-
-				if (inputContainer) {
-					inputContainer.innerHTML = '';
-					let input;
-					if (isMultiline) {
-						input = document.createElement('textarea');
-						input.rows = 4;
-					} else {
-						input = document.createElement('input');
-						input.type = 'text';
-					}
-
-					input.className = 'modal-input';
-					input.value = defaultValue;
-					inputContainer.appendChild(input);
-
-					if (!isMultiline) {
-						input.onkeydown = (e) => {
-							if (e.key === 'Enter') {
-								const val = input.value;
-								closeHelp();
-								resolve(val);
-							}
-						};
-					} else {
-						input.onkeydown = (e) => {
-							if (e.key === 'Enter' && e.ctrlKey) {
-								const val = input.value;
-								closeHelp();
-								resolve(val);
-							}
-						};
-					}
-				}
-
-				if (actionFooter) {
-					actionFooter.innerHTML = '';
-					actionFooter.style.display = 'flex';
-
-					const cancelBtn = document.createElement('button');
-					cancelBtn.className = 'modal-btn secondary';
-					cancelBtn.innerText = t('modal.cancel');
-					cancelBtn.onclick = () => { closeHelp(); resolve(null); };
-
-					const confirmBtn = document.createElement('button');
-					confirmBtn.className = 'modal-btn primary';
-					confirmBtn.innerText = t('modal.ok');
-					confirmBtn.onclick = () => {
-						const el = inputContainer.querySelector('input') || inputContainer.querySelector('textarea');
-						const val = el ? el.value : '';
+					const safeResolve = (val) => {
+						document.removeEventListener('keydown', handleKey);
 						closeHelp();
 						resolve(val);
 					};
 
-					actionFooter.appendChild(cancelBtn);
-					actionFooter.appendChild(confirmBtn);
-				}
+					if (actionFooter) {
+						actionFooter.innerHTML = '';
+						actionFooter.style.display = 'flex';
 
-				if (modal) {
-					modal.style.display = 'flex';
-					const inp = inputContainer.querySelector('input') || inputContainer.querySelector('textarea');
-					if (inp) setTimeout(() => inp.focus(), 50);
-				}
-			});
-		}
+						const cancelBtn = document.createElement('button');
+						cancelBtn.className = 'modal-btn secondary';
+						cancelBtn.innerText = t('modal.no');
+						cancelBtn.onclick = () => { safeResolve(false); };
 
-		function closeHelp() {
-			const modal = document.getElementById('helpModal');
-			if (modal) modal.style.display = 'none';
-		}
+						const confirmBtn = document.createElement('button');
+						confirmBtn.className = 'modal-btn primary';
+						confirmBtn.innerText = t('modal.yes');
+						confirmBtn.onclick = () => { safeResolve(true); };
 
-		function closeModalOutside(event) {
-			if (event.target.id === 'helpModal') {
-				closeHelp();
+						actionFooter.appendChild(cancelBtn);
+						actionFooter.appendChild(confirmBtn);
+					}
+
+					if (modal) modal.style.display = 'flex';
+				});
 			}
-		}
-	</script>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-	<script src="translations_data.js"></script>
-	<script src="i18n.js"></script>
-	<script src="star_calculator.js"></script>
-	<script src="level_converter.js"></script>
-	<script src="difficulty_info.js"></script>
-	<script src="text_splitter.js"></script>
-	<script src="script.js"></script>
+			function showAlert(message) {
+				return new Promise((resolve) => {
+					const modal = document.getElementById('helpModal');
+					const helpText = document.getElementById('helpTextContent');
+					const helpFooter = document.getElementById('helpFooter');
+					const inputContainer = document.getElementById('modalInputContainer');
+					const actionFooter = document.getElementById('modalActionFooter');
+
+					helpText.innerHTML = message;
+					if (helpFooter) helpFooter.style.display = 'none';
+					if (inputContainer) inputContainer.innerHTML = '';
+
+					const cleanup = () => {
+						document.removeEventListener('keydown', handleKey);
+						closeHelp();
+					};
+
+					const handleKey = (e) => {
+						if (e.key === 'Enter' || e.key === 'Escape') {
+							e.preventDefault();
+							cleanup();
+							resolve();
+						}
+					};
+
+					document.addEventListener('keydown', handleKey);
+
+					if (actionFooter) {
+						actionFooter.innerHTML = '';
+						actionFooter.style.display = 'flex';
+
+						const confirmBtn = document.createElement('button');
+						confirmBtn.className = 'modal-btn primary';
+						confirmBtn.innerText = t('modal.ok');
+						confirmBtn.onclick = () => {
+							cleanup();
+							resolve();
+						};
+
+						actionFooter.appendChild(confirmBtn);
+					}
+
+					if (modal) modal.style.display = 'flex';
+				});
+			}
+
+			function showPrompt(message, defaultValue = '', isMultiline = false) {
+				return new Promise((resolve) => {
+					const modal = document.getElementById('helpModal');
+					const helpText = document.getElementById('helpTextContent');
+					const helpFooter = document.getElementById('helpFooter');
+					const inputContainer = document.getElementById('modalInputContainer');
+					const actionFooter = document.getElementById('modalActionFooter');
+
+					helpText.innerHTML = message;
+					if (helpFooter) helpFooter.style.display = 'none';
+
+					if (inputContainer) {
+						inputContainer.innerHTML = '';
+						let input;
+						if (isMultiline) {
+							input = document.createElement('textarea');
+							input.rows = 4;
+						} else {
+							input = document.createElement('input');
+							input.type = 'text';
+						}
+
+						input.className = 'modal-input';
+						input.value = defaultValue;
+						inputContainer.appendChild(input);
+
+						if (!isMultiline) {
+							input.onkeydown = (e) => {
+								if (e.key === 'Enter') {
+									const val = input.value;
+									closeHelp();
+									resolve(val);
+								}
+							};
+						} else {
+							input.onkeydown = (e) => {
+								if (e.key === 'Enter' && e.ctrlKey) {
+									const val = input.value;
+									closeHelp();
+									resolve(val);
+								}
+							};
+						}
+					}
+
+					if (actionFooter) {
+						actionFooter.innerHTML = '';
+						actionFooter.style.display = 'flex';
+
+						const cancelBtn = document.createElement('button');
+						cancelBtn.className = 'modal-btn secondary';
+						cancelBtn.innerText = t('modal.cancel');
+						cancelBtn.onclick = () => { closeHelp(); resolve(null); };
+
+						const confirmBtn = document.createElement('button');
+						confirmBtn.className = 'modal-btn primary';
+						confirmBtn.innerText = t('modal.ok');
+						confirmBtn.onclick = () => {
+							const el = inputContainer.querySelector('input') || inputContainer.querySelector('textarea');
+							const val = el ? el.value : '';
+							closeHelp();
+							resolve(val);
+						};
+
+						actionFooter.appendChild(cancelBtn);
+						actionFooter.appendChild(confirmBtn);
+					}
+
+					if (modal) {
+						modal.style.display = 'flex';
+						const inp = inputContainer.querySelector('input') || inputContainer.querySelector('textarea');
+						if (inp) setTimeout(() => inp.focus(), 50);
+					}
+				});
+			}
+
+			function closeHelp() {
+				const modal = document.getElementById('helpModal');
+				if (modal) modal.style.display = 'none';
+			}
+
+			function closeModalOutside(event) {
+				if (event.target.id === 'helpModal') {
+					closeHelp();
+				}
+			}
+		</script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+		<script src="translations_data.js"></script>
+		<script src="i18n.js"></script>
+		<script src="star_calculator.js"></script>
+		<script src="level_converter.js"></script>
+		<script src="difficulty_info.js"></script>
+		<script src="text_splitter.js"></script>
+		<script src="script.js"></script>
+	</div>
 </body>
 
 </html>

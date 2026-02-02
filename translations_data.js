@@ -3,7 +3,7 @@ const TRANSLATIONS = {
         "nav": {
             "star_calculator": "Star Calculator",
             "level_converter": "Difficulty Converter",
-            "text_splitter": "Split Text into Images"
+            "text_splitter": "Typo Image Generator"
         },
         "star_calculator": {
             "title": "Star Calculator",
@@ -84,7 +84,7 @@ const TRANSLATIONS = {
         "nav": {
             "star_calculator": "별 계산기",
             "level_converter": "난도 변환기",
-            "text_splitter": "텍스트 이미지 분할"
+            "text_splitter": "타이포 이미지 생성기"
         },
         "star_calculator": {
             "title": "별 계산기",

@@ -16,13 +16,28 @@ body {
     font-family: 'Inter', sans-serif;
     background: radial-gradient(circle at top left, #1e293b, #0f172a);
     color: var(--text-color);
-    min-height: 100vh;
+    min-height: 1080px;
+    min-width: 1920px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 20px;
+}
+
+html {
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.page-wrapper {
+    width: 1920px;
+    max-width: 1920px;
+    min-width: 1920px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-x: hidden;
-    /* Prevent horizontal shifts */
-    padding-top: 20px;
+    flex-grow: 0;
+    flex-shrink: 0;
 }
 
 * {
@@ -36,8 +51,7 @@ body {
     gap: 20px;
     width: 90%;
     max-width: 1000px;
-    align-items: stretch;
-    min-height: 80vh;
+    align-items: flex-start;
 }
 
 .container {
@@ -57,6 +71,24 @@ body {
     /* Ensure padding doesn't affect basis calculation */
 }
 
+.level-converter-container {
+    min-height: 650px;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+.star-calculator-container {
+    flex: 1 0 45%;
+    min-height: 750px;
+    margin-top: 60px;
+}
+
+#tab-splitter .container {
+    flex: 1 0 35%;
+    min-height: 750px;
+    margin-top: 60px;
+}
+
 .visual-container {
     flex: 1.5 0 55%;
     /* Solid basis percentage */
@@ -70,6 +102,46 @@ body {
     animation: fadeIn 0.8s ease-out;
     position: relative;
     overflow: hidden;
+    min-height: 750px;
+    margin-top: 60px;
+}
+
+#visualCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.visual-label {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.beat-angle-display {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.beat-angle-display:hover {
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+    transform: scale(1.05);
 }
 
 h1 {
