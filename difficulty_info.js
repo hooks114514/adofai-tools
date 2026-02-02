@@ -1,0 +1,353 @@
+const DIFFICULTY_BASE_HEIGHT = 40;
+
+const GG_LEVELS = [];
+for (let i = 1; i <= 18; i++) GG_LEVELS.push(i);
+GG_LEVELS.push(18.5, 19, 19.5);
+for (let i = 200; i <= 226; i++) GG_LEVELS.push(i / 10);
+
+const TUF_LEVELS = [];
+['P', 'G', 'U'].forEach(prefix => {
+    for (let i = 1; i <= 20; i++) TUF_LEVELS.push(prefix + i);
+});
+
+const LEGACY_LEVELS = [];
+for (let i = 1; i <= 18; i++) LEGACY_LEVELS.push(i);
+LEGACY_LEVELS.push(18.5, 19, 19.5);
+for (let i = 200; i <= 209; i++) {
+    let base = i / 10;
+    LEGACY_LEVELS.push(base);
+    LEGACY_LEVELS.push(parseFloat((base + 0.05).toFixed(2)));
+}
+// 21 이후: 21, 21+, 21.1, 21.1+, 21.2, 21.2+, 21.3, 21.3+
+for (let i = 210; i <= 213; i++) {
+    let base = i / 10;
+    LEGACY_LEVELS.push(base);
+    LEGACY_LEVELS.push(parseFloat((base + 0.05).toFixed(2)));
+}
+
+const TUF_COLORS = {
+    'P1': '#0098ff', 'P2': '#00a0ff', 'P3': '#00a8ff', 'P4': '#00b0ff', 'P5': '#00b8ff',
+    'P6': '#00c0ff', 'P7': '#00d0ff', 'P8': '#00e0ff', 'P9': '#00e8ff', 'P10': '#00f0ff',
+    'P11': '#00ffff', 'P12': '#00ffe8', 'P13': '#00ffd0', 'P14': '#00ffb8', 'P15': '#00ffa8',
+    'P16': '#00ff88', 'P17': '#00ff70', 'P18': '#00ff48', 'P19': '#00ff30', 'P20': '#48ff18',
+    'G1': '#f0a800', 'G2': '#f0a008', 'G3': '#f09810', 'G4': '#f09018', 'G5': '#e88820',
+    'G6': '#e87828', 'G7': '#e87030', 'G8': '#e86838', 'G9': '#e86040', 'G10': '#e05848',
+    'G11': '#e05050', 'G12': '#e04858', 'G13': '#e04060', 'G14': '#e03868', 'G15': '#d83070',
+    'G16': '#d82078', 'G17': '#d81880', 'G18': '#d81088', 'G19': '#d80890', 'G20': '#d00098',
+    'U1': '#7850b0', 'U2': '#7848a8', 'U3': '#7048a0', 'U4': '#684098', 'U5': '#604090',
+    'U6': '#583880', 'U7': '#583878', 'U8': '#503070', 'U9': '#483068', 'U10': '#402860',
+    'U11': '#382858', 'U12': '#302048', 'U13': '#302040', 'U14': '#281838', 'U15': '#201830',
+    'U16': '#181028', 'U17': '#101020', 'U18': '#100810', 'U19': '#080808', 'U20': '#000000'
+};
+
+const GG_COLORS = '#3f466dff';
+
+const LEGACY_COLORS = {
+    1: '#0098ff', 2: '#00b8ff', 3: '#00e0ff', 4: '#00ffff', 5: '#00ffa8',
+    6: '#00ff00', 7: '#68ff00', 8: '#98ff00', 9: '#d0ff00',
+    10: '#ffff00', 11: '#ffe000', 12: '#ffd000', 13: '#ffa800', 14: '#ff8800',
+    15: '#ff6800', 16: '#ff4800', 17: '#ff0000', 18: '#d00000',
+    18.5: '#a82000', 19: '#680000', 19.5: '#481000',
+    20: '#401010', 20.05: '#401820',
+    20.1: '#402030', 20.15: '#382038',
+    20.2: '#382850', 20.25: '#302858',
+    20.3: '#302868', 20.35: '#302870',
+    20.4: '#282880', 20.45: '#282888',
+    20.5: '#202890', 20.55: '#202898',
+    20.6: '#2028a0', 20.65: '#2028a0',
+    20.7: '#2020a0', 20.75: '#2018a0',
+    20.8: '#281090', 20.85: '#281080',
+    20.9: '#300878', 20.95: '#300870',
+    21: '#300868', 21.05: '#300858',
+    21.1: '#300058', 21.15: '#381058',
+    21.2: '#482068', 21.25: '#503078',
+    21.3: '#583880', 21.35: '#000000'
+};
+
+function ggToTuf(gg) {
+    if (gg < 20) {
+        let val;
+        if (gg <= 3) val = 1 + (gg - 1) * 0.5;
+        else if (gg <= 18) val = gg - 1;
+        else val = 17 + (gg - 18) * 2;
+        return { prefix: 'P', val: parseFloat(val.toFixed(6)) };
+    } else if (gg < 21) {
+        let val = 1 + (gg - 20) * 20;
+        return { prefix: 'G', val: parseFloat(val.toFixed(6)) };
+    } else {
+        let val = 1 + (gg - 21) * 8;
+        return { prefix: 'U', val: parseFloat(val.toFixed(6)) };
+    }
+}
+
+function ggToLegacy(gg) {
+    if (gg <= 21) return gg;
+    return 21 + (gg - 21) / 5;
+}
+
+function tufToGg(prefix, val) {
+    if (prefix === 'P') {
+        if (val <= 2) return 1 + (val - 1) / 0.5;
+        else if (val <= 17) return val + 1;
+        else return 18 + (val - 17) / 2;
+    } else if (prefix === 'G') {
+        return 20 + (val - 1) / 20;
+    } else if (prefix === 'U') {
+        return 21 + (val - 1) / 8;
+    }
+    return 1;
+}
+
+function legacyToGg(legacy) {
+    if (legacy <= 21) return legacy;
+    return 21 + (legacy - 21) * 5;
+}
+
+function buildGgRanges() {
+    const ranges = [];
+    for (let i = 0; i < GG_LEVELS.length; i++) {
+        const start = GG_LEVELS[i];
+        const end = (i + 1 < GG_LEVELS.length) ? GG_LEVELS[i + 1] : start + 0.1;
+        ranges.push({
+            label: formatGgLabel(start),
+            start,
+            end,
+            height: DIFFICULTY_BASE_HEIGHT,
+            color: GG_COLORS
+        });
+    }
+    return ranges;
+}
+
+function buildTufRanges() {
+    const ranges = [];
+    for (let i = 0; i < TUF_LEVELS.length; i++) {
+        const lvl = TUF_LEVELS[i];
+        const prefix = lvl[0];
+        const num = parseInt(lvl.substring(1));
+        const ggStart = tufToGg(prefix, num);
+        const ggEnd = tufToGg(prefix, num + 1);
+        ranges.push({
+            label: lvl,
+            ggStart,
+            ggEnd,
+            height: DIFFICULTY_BASE_HEIGHT,
+            color: TUF_COLORS[lvl] || '#666'
+        });
+    }
+    return ranges;
+}
+
+function buildLegacyRanges() {
+    const ranges = [];
+    for (let i = 0; i < LEGACY_LEVELS.length; i++) {
+        const start = LEGACY_LEVELS[i];
+        const end = (i + 1 < LEGACY_LEVELS.length) ? LEGACY_LEVELS[i + 1] : start + 0.05;
+        const ggStart = legacyToGg(start);
+        const ggEnd = legacyToGg(end);
+        ranges.push({
+            label: formatLegacyLabel(start),
+            start,
+            ggStart,
+            ggEnd,
+            height: DIFFICULTY_BASE_HEIGHT,
+            color: LEGACY_COLORS[start] || '#666'
+        });
+    }
+    return ranges;
+}
+
+function formatGgLabel(val) {
+    if (val === 18.5) return '18+';
+    if (val === 19.5) return '19+';
+    if (Number.isInteger(val)) return val.toString();
+    return val.toFixed(1);
+}
+
+function formatLegacyLabel(val) {
+    if (val === 18.5) return '18+';
+    if (val === 19.5) return '19+';
+    if (Number.isInteger(val)) return val.toString();
+    const str = val.toFixed(2);
+    // 21.05 → "21+", 21.15 → "21.1+", 21.25 → "21.2+", etc.
+    if (str.endsWith('5')) {
+        const baseVal = Math.floor(val);
+        const decimal = val - baseVal;
+        // 0.05 → base+, 0.15 → base.1+, 0.25 → base.2+, etc.
+        if (Math.abs(decimal - 0.05) < 0.001) {
+            return baseVal + '+';
+        }
+        // Use floor to avoid rounding: 21.15 → 21.1+, 21.25 → 21.2+
+        const firstDecimal = Math.floor((decimal - 0.05) * 10 + 0.001);
+        return baseVal + '.' + firstDecimal + '+';
+    }
+    return val.toFixed(1);
+}
+
+function calcHeightByGgRange(ggStart, ggEnd, ggRanges, baseHeight) {
+    let totalHeight = 0;
+    for (const r of ggRanges) {
+        const overlap = Math.max(0, Math.min(r.end, ggEnd) - Math.max(r.start, ggStart));
+        if (overlap > 0) {
+            const ratio = overlap / (r.end - r.start);
+            totalHeight += baseHeight * ratio;
+        }
+    }
+    return Math.max(totalHeight, 1);
+}
+
+function renderDifficultyTable(base = 'gg') {
+    const wrapper = document.getElementById('difficulty-table-wrapper');
+    if (!wrapper) return;
+
+    wrapper.innerHTML = '';
+
+    const ggRanges = buildGgRanges();
+    const tufRanges = buildTufRanges();
+    const legacyRanges = buildLegacyRanges();
+
+    let columns = [];
+
+    if (base === 'gg') {
+        columns = [
+            { name: 'ADOFAI.gg', ranges: ggRanges, type: 'gg' },
+            { name: 'TUF', ranges: tufRanges, type: 'tuf' },
+            { name: 'TUF (Legacy)', ranges: legacyRanges, type: 'legacy' }
+        ];
+        for (const r of tufRanges) {
+            r.height = calcHeightByGgRange(r.ggStart, r.ggEnd, ggRanges, DIFFICULTY_BASE_HEIGHT);
+        }
+        for (const r of legacyRanges) {
+            r.height = calcHeightByGgRange(r.ggStart, r.ggEnd, ggRanges, DIFFICULTY_BASE_HEIGHT);
+        }
+    } else if (base === 'tuf') {
+        for (const r of ggRanges) {
+            const tufStart = ggToTuf(r.start);
+            const tufEnd = ggToTuf(r.end);
+            r.tufStart = tufStart;
+            r.tufEnd = tufEnd;
+        }
+        for (const r of legacyRanges) {
+            const tufStart = ggToTuf(r.ggStart);
+            const tufEnd = ggToTuf(r.ggEnd);
+            r.tufStart = tufStart;
+            r.tufEnd = tufEnd;
+        }
+        for (const r of ggRanges) {
+            r.height = calcHeightByTufRange(r.tufStart, r.tufEnd, tufRanges, DIFFICULTY_BASE_HEIGHT);
+        }
+        for (const r of legacyRanges) {
+            r.height = calcHeightByTufRange(r.tufStart, r.tufEnd, tufRanges, DIFFICULTY_BASE_HEIGHT);
+        }
+        columns = [
+            { name: 'TUF', ranges: tufRanges, type: 'tuf' },
+            { name: 'ADOFAI.gg', ranges: ggRanges, type: 'gg' },
+            { name: 'TUF (Legacy)', ranges: legacyRanges, type: 'legacy' }
+        ];
+    } else if (base === 'legacy') {
+        for (const r of ggRanges) {
+            r.legacyStart = ggToLegacy(r.start);
+            r.legacyEnd = ggToLegacy(r.end);
+        }
+        for (const r of tufRanges) {
+            r.legacyStart = ggToLegacy(r.ggStart);
+            r.legacyEnd = ggToLegacy(r.ggEnd);
+        }
+        for (const r of ggRanges) {
+            r.height = calcHeightByLegacyRange(r.legacyStart, r.legacyEnd, legacyRanges, DIFFICULTY_BASE_HEIGHT);
+        }
+        for (const r of tufRanges) {
+            r.height = calcHeightByLegacyRange(r.legacyStart, r.legacyEnd, legacyRanges, DIFFICULTY_BASE_HEIGHT);
+        }
+        columns = [
+            { name: 'TUF (Legacy)', ranges: legacyRanges, type: 'legacy' },
+            { name: 'ADOFAI.gg', ranges: ggRanges, type: 'gg' },
+            { name: 'TUF', ranges: tufRanges, type: 'tuf' }
+        ];
+    }
+
+    const table = document.createElement('div');
+    table.className = 'difficulty-table';
+
+    for (const col of columns) {
+        const colDiv = document.createElement('div');
+        colDiv.className = 'difficulty-column';
+
+        const header = document.createElement('div');
+        header.className = 'difficulty-column-header';
+        header.textContent = col.name;
+        colDiv.appendChild(header);
+
+        const body = document.createElement('div');
+        body.className = 'difficulty-column-body';
+
+        for (const r of col.ranges) {
+            const box = document.createElement('div');
+            box.className = 'difficulty-box';
+            box.style.height = r.height + 'px';
+            box.style.background = r.color;
+            box.textContent = r.label;
+            body.appendChild(box);
+        }
+
+        colDiv.appendChild(body);
+        table.appendChild(colDiv);
+    }
+
+    wrapper.appendChild(table);
+}
+
+function calcHeightByTufRange(tufStart, tufEnd, tufRanges, baseHeight) {
+    let totalHeight = 0;
+    const startIdx = tufToIndex(tufStart);
+    const endIdx = tufToIndex(tufEnd);
+    for (let i = 0; i < tufRanges.length; i++) {
+        const rStart = i;
+        const rEnd = i + 1;
+        const overlap = Math.max(0, Math.min(rEnd, endIdx) - Math.max(rStart, startIdx));
+        if (overlap > 0) {
+            totalHeight += baseHeight * overlap;
+        }
+    }
+    return Math.max(totalHeight, 1);
+}
+
+function tufToIndex(tuf) {
+    const prefixOrder = { 'P': 0, 'G': 20, 'U': 40 };
+    return prefixOrder[tuf.prefix] + tuf.val - 1;
+}
+
+function calcHeightByLegacyRange(legacyStart, legacyEnd, legacyRanges, baseHeight) {
+    let totalHeight = 0;
+    for (const r of legacyRanges) {
+        const rEnd = (legacyRanges.indexOf(r) + 1 < legacyRanges.length)
+            ? legacyRanges[legacyRanges.indexOf(r) + 1].start
+            : r.start + 0.05;
+        const overlap = Math.max(0, Math.min(rEnd, legacyEnd) - Math.max(r.start, legacyStart));
+        if (overlap > 0) {
+            const ratio = overlap / (rEnd - r.start);
+            totalHeight += baseHeight * ratio;
+        }
+    }
+    return Math.max(totalHeight, 1);
+}
+
+function initDifficultyInfo() {
+    const selector = document.getElementById('difficulty-base-selector');
+    if (selector) {
+        selector.querySelectorAll('.segment-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                selector.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderDifficultyTable(btn.dataset.base);
+            });
+        });
+    }
+    renderDifficultyTable('gg');
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDifficultyInfo);
+} else {
+    initDifficultyInfo();
+}

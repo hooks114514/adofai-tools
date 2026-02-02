@@ -69,6 +69,9 @@ const TRANSLATIONS = {
             "status_error": "Error generating zip.",
             "error_font_load": "Font loading failed."
         },
+        "difficulty_info": {
+            "title": "Difficulty Info"
+        },
         "modal": {
             "confirm": "Confirm",
             "yes": "Yes",
@@ -146,6 +149,9 @@ const TRANSLATIONS = {
             "status_ready": "다운로드 준비 완료!",
             "status_error": "zip 생성 중 오류가 발생했습니다.",
             "error_font_load": "폰트 로드에 실패했습니다."
+        },
+        "difficulty_info": {
+            "title": "난도 정보"
         },
         "modal": {
             "confirm": "확인",

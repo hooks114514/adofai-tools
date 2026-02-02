@@ -104,91 +104,108 @@
 			</div>
 		</div>
 	</div>
-	</div>
 
 
 	<div id="tab-new" class="tab-content active">
-		<div class="main-wrapper">
-			<div class="container" style="justify-content: center; align-items: center;">
-				<div
-					style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
-					<div class="title-with-help" style="margin-bottom: 30px;">
-						<h1 data-i18n="level_converter.title">Level Converter</h1>
-					</div>
+		<div class="converter-scroll-wrapper">
+			<div class="main-wrapper">
+				<div class="container" style="justify-content: center; align-items: center;">
 					<div
-						style="width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center;">
-
-						<div class="converter-row" style="width: 100%;">
-							<label>ADOFAI.gg</label>
-							<div class="input-pair">
-								<select id="gg_list"></select>
-								<input type="text" id="gg" placeholder="ADOFAI.gg">
-							</div>
+						style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%;">
+						<div class="title-with-help" style="margin-bottom: 30px;">
+							<h1 data-i18n="level_converter.title">Level Converter</h1>
 						</div>
+						<div
+							style="width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center;">
 
-						<div class="converter-row" style="width: 100%;">
-							<label>TUF</label>
-							<div class="input-pair">
-
-								<div class="custom-select" id="tuf_custom_select"
-									onclick="toggleDropdown('tuf_custom_select', event)">
-									<div class="selected-option" id="tuf_selected_img">
-										<span>-</span>
-									</div>
-									<div class="options-container" id="tuf_options">
-
-									</div>
+							<div class="converter-row" style="width: 100%;">
+								<label>ADOFAI.gg</label>
+								<div class="input-pair">
+									<select id="gg_list"></select>
+									<input type="text" id="gg" placeholder="ADOFAI.gg">
 								</div>
-
-								<select id="tuf_list" style="display:none;"></select>
-
-								<input type="text" id="tuf" placeholder="TUF">
 							</div>
-						</div>
 
-						<div class="converter-row" style="width: 100%;">
-							<label>TUF (Legacy)</label>
-							<div class="input-pair">
+							<div class="converter-row" style="width: 100%;">
+								<label>TUF</label>
+								<div class="input-pair">
 
-								<div class="custom-select" id="legacy_custom_select"
-									onclick="toggleDropdown('legacy_custom_select', event)">
-									<div class="selected-option" id="legacy_selected_img">
-										<span>-</span>
+									<div class="custom-select" id="tuf_custom_select"
+										onclick="toggleDropdown('tuf_custom_select', event)">
+										<div class="selected-option" id="tuf_selected_img">
+											<span>-</span>
+										</div>
+										<div class="options-container" id="tuf_options">
+
+										</div>
 									</div>
-									<div class="options-container" id="legacy_options">
 
-									</div>
+									<select id="tuf_list" style="display:none;"></select>
+
+									<input type="text" id="tuf" placeholder="TUF">
 								</div>
-								<select id="legacy_list" style="display:none;"></select>
-
-								<input type="text" id="tuf_legacy" placeholder="TUF (Legacy)">
 							</div>
-							<br>
-							<p class="small-text disclaimer-text">ⓘ <a href="https://adofai.gg"
-									target="_blank">ADOFAI.gg</a><span
-									data-i18n="level_converter.disclaimer_part1">와</span> <a href="https://tuforums.com"
-									target="_blank">TUF</a><span data-i18n="level_converter.disclaimer_part2">의 난이도 책정
-									기준에는 차이가 있습니다. 참고용으로만 사용해 주세요.</span></p>
+
+							<div class="converter-row" style="width: 100%;">
+								<label>TUF (Legacy)</label>
+								<div class="input-pair">
+
+									<div class="custom-select" id="legacy_custom_select"
+										onclick="toggleDropdown('legacy_custom_select', event)">
+										<div class="selected-option" id="legacy_selected_img">
+											<span>-</span>
+										</div>
+										<div class="options-container" id="legacy_options">
+
+										</div>
+									</div>
+									<select id="legacy_list" style="display:none;"></select>
+
+									<input type="text" id="tuf_legacy" placeholder="TUF (Legacy)">
+								</div>
+								<br>
+								<p class="small-text disclaimer-text">ⓘ <a href="https://adofai.gg"
+										target="_blank">ADOFAI.gg</a><span
+										data-i18n="level_converter.disclaimer_part1">와</span> <a
+										href="https://tuforums.com" target="_blank">TUF</a><span
+										data-i18n="level_converter.disclaimer_part2">의 난이도 책정
+										기준에는 차이가 있습니다. 참고용으로만 사용해 주세요.</span></p>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="footer-credits">
-					<p class="small-text"><a href="https://github.com/T21C/T21C-assets" target="_blank">The Universal
-							Forums
-							Assets</a> © 2022-2024 by <a href="https://tuforums.com/" target="_blank">the Universal
-							Forums</a> is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"
-							target="_blank">the CC BY 4.0 license</a>.</p>
-					<p class="small-text" data-i18n="level_converter.credits_pgu">Credit for PGU icons goes to Sean
-						Lenard B. (@seanlenardb)</p>
-					<p class="small-text" data-i18n="level_converter.credits_gradient">Credit for gradient colors goes
-						to Sean Lenard B. (@seanlenardb) & BadWolf
-						(@badwolf_100)</p>
-					<p class="small-text" data-i18n="level_converter.credits_icons">Credit for all icons goes to TEO
-						(@TEO_72)</p>
-					<p class="small-text" data-i18n="level_converter.credits_extension">Gradient by Unofficial forums,
-						extension by TEO (@TEO_72)</p>
+					<div class="footer-credits">
+						<p class="small-text"><a href="https://github.com/T21C/T21C-assets" target="_blank">The
+								Universal
+								Forums
+								Assets</a> © 2022-2024 by <a href="https://tuforums.com/" target="_blank">the Universal
+								Forums</a> is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"
+								target="_blank">the CC BY 4.0 license</a>.</p>
+						<p class="small-text" data-i18n="level_converter.credits_pgu">Credit for PGU icons goes to Sean
+							Lenard B. (@seanlenardb)</p>
+						<p class="small-text" data-i18n="level_converter.credits_gradient">Credit for gradient colors
+							goes
+							to Sean Lenard B. (@seanlenardb) & BadWolf
+							(@badwolf_100)</p>
+						<p class="small-text" data-i18n="level_converter.credits_icons">Credit for all icons goes to TEO
+							(@TEO_72)</p>
+						<p class="small-text" data-i18n="level_converter.credits_extension">Gradient by Unofficial
+							forums,
+							extension by TEO (@TEO_72)</p>
 
+					</div>
 				</div>
+			</div>
+
+			<div class="difficulty-info-container">
+				<div class="title-with-help">
+					<h2 data-i18n="difficulty_info.title">난도 정보</h2>
+				</div>
+				<div class="difficulty-base-selector" id="difficulty-base-selector">
+					<button type="button" class="segment-btn active" data-base="gg">ADOFAI.gg</button>
+					<button type="button" class="segment-btn" data-base="tuf">TUF</button>
+					<button type="button" class="segment-btn" data-base="legacy">TUF (Legacy)</button>
+				</div>
+				<div id="difficulty-table-wrapper" class="difficulty-table-wrapper"></div>
 			</div>
 		</div>
 	</div>
@@ -611,6 +628,7 @@
 	<script src="i18n.js"></script>
 	<script src="star_calculator.js"></script>
 	<script src="level_converter.js"></script>
+	<script src="difficulty_info.js"></script>
 	<script src="text_splitter.js"></script>
 	<script src="script.js"></script>
 </body>
