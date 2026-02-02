@@ -371,7 +371,11 @@ function renderDifficultyTable(base = 'gg') {
                     // Base is GG, filter by ggStart/ggEnd
                     const minGg = baseStart.start;
                     const maxGg = baseEnd.end;
+                    const isLastSection = (section === 2);
                     sectionRanges = col.ranges.filter(r => {
+                        if (isLastSection) {
+                            return r.ggStart >= minGg;
+                        }
                         return r.ggStart >= minGg && r.ggStart < maxGg;
                     });
                 } else if (base === 'tuf') {
@@ -406,6 +410,47 @@ function renderDifficultyTable(base = 'gg') {
                 box.style.height = r.height + 'px';
                 box.style.background = r.color;
                 box.textContent = r.label;
+
+                // Add small gap at tier boundaries (21.1, 21.2, 21.3)
+                const tierBoundaries = [21.1, 21.2, 21.3];
+                let addGap = false;
+                if (col.type === 'legacy') {
+                    addGap = tierBoundaries.includes(r.start);
+                } else if (col.type === 'gg') {
+                    // GG levels corresponding to legacy boundaries
+                    const ggBoundaries = [21.5, 22, 22.5];
+                    addGap = ggBoundaries.includes(r.start);
+                } else if (col.type === 'tuf') {
+                    // TUF levels U5, U9, U13 (correspond to GG 21.5, 22, 22.5)
+                    addGap = ['U5', 'U9', 'U13'].includes(r.label);
+                }
+                if (addGap) {
+                    box.style.marginTop = '4px';
+                }
+
+                // Add hover event for conversion popup
+                box.addEventListener('mouseenter', (e) => {
+                    const rect = box.getBoundingClientRect();
+                    showDifficultyConversion(r, col.type, rect.right + 10, rect.top);
+                    // Show line across this table section's columns only
+                    const columns = table.querySelectorAll('.difficulty-column');
+                    if (columns.length > 0) {
+                        const firstCol = columns[0].getBoundingClientRect();
+                        const lastCol = columns[columns.length - 1].getBoundingClientRect();
+                        showHighlightLine(rect.top, firstCol.left, lastCol.right);
+                    }
+                });
+
+                box.addEventListener('mouseleave', () => {
+                    hideDifficultyConversion();
+                    hideHighlightLine();
+                });
+
+                // Add click event to fill converter
+                box.addEventListener('click', () => {
+                    fillConverterWithDifficulty(r, col.type);
+                });
+
                 body.appendChild(box);
             }
 
@@ -469,6 +514,115 @@ function initDifficultyInfo() {
         });
     }
     renderDifficultyTable('gg');
+}
+
+function showDifficultyConversion(range, sourceType, x, y) {
+    const existingPopup = document.querySelector('.difficulty-conversion-popup');
+    if (existingPopup) existingPopup.remove();
+
+    let ggValue, tufValue, legacyValue;
+
+    if (sourceType === 'gg') {
+        ggValue = parseFloat(range.start.toFixed(6));
+        const tuf = ggToTuf(range.start);
+        tufValue = tuf.prefix + parseFloat(tuf.val.toFixed(6));
+        legacyValue = parseFloat(ggToLegacy(range.start).toFixed(6));
+    } else if (sourceType === 'tuf') {
+        tufValue = range.label;
+        const prefix = range.label[0];
+        const num = parseInt(range.label.substring(1));
+        ggValue = parseFloat(tufToGg(prefix, num).toFixed(6));
+        legacyValue = parseFloat(ggToLegacy(tufToGg(prefix, num)).toFixed(6));
+    } else if (sourceType === 'legacy') {
+        legacyValue = parseFloat(range.start.toFixed(6));
+        ggValue = parseFloat(legacyToGg(range.start).toFixed(6));
+        const tuf = ggToTuf(legacyToGg(range.start));
+        tufValue = tuf.prefix + parseFloat(tuf.val.toFixed(6));
+    }
+
+    const popup = document.createElement('div');
+    popup.className = 'difficulty-conversion-popup';
+    popup.innerHTML = `
+        <div class="conversion-item">
+            <span class="conversion-label">ADOFAI.gg:</span>
+            <span class="conversion-value">${ggValue}</span>
+        </div>
+        <div class="conversion-item">
+            <span class="conversion-label">TUF:</span>
+            <span class="conversion-value">${tufValue}</span>
+        </div>
+        <div class="conversion-item">
+            <span class="conversion-label">TUF (Legacy):</span>
+            <span class="conversion-value">${legacyValue}</span>
+        </div>
+    `;
+
+    document.body.appendChild(popup);
+
+    const rect = popup.getBoundingClientRect();
+    let left = x + 10;
+    let top = y + 10;
+
+    if (left + rect.width > window.innerWidth) left = x - rect.width - 10;
+    if (top + rect.height > window.innerHeight) top = y - rect.height - 10;
+
+    popup.style.left = left + 'px';
+    popup.style.top = top + 'px';
+
+}
+
+function hideDifficultyConversion() {
+    const popup = document.querySelector('.difficulty-conversion-popup');
+    if (popup) popup.remove();
+}
+
+function showHighlightLine(top, left, right) {
+    let line = document.querySelector('.difficulty-highlight-line');
+    if (!line) {
+        line = document.createElement('div');
+        line.className = 'difficulty-highlight-line';
+        document.body.appendChild(line);
+    }
+
+    line.style.top = top + 'px';
+    line.style.left = left + 'px';
+    line.style.width = (right - left) + 'px';
+}
+
+function hideHighlightLine() {
+    const line = document.querySelector('.difficulty-highlight-line');
+    if (line) line.remove();
+}
+
+function fillConverterWithDifficulty(range, sourceType) {
+    const ggInput = document.getElementById('gg');
+    const tufInput = document.getElementById('tuf');
+    const legacyInput = document.getElementById('tuf_legacy');
+
+    if (sourceType === 'gg') {
+        if (ggInput) ggInput.value = range.start;
+    } else if (sourceType === 'tuf') {
+        if (tufInput) {
+            const prefix = range.label[0];
+            const num = parseInt(range.label.substring(1));
+            tufInput.value = prefix + num;
+        }
+    } else if (sourceType === 'legacy') {
+        if (legacyInput) legacyInput.value = range.start;
+    }
+
+    // Trigger input event to update other fields
+    if (sourceType === 'gg' && ggInput) {
+        ggInput.dispatchEvent(new Event('input', { bubbles: true }));
+    } else if (sourceType === 'tuf' && tufInput) {
+        tufInput.dispatchEvent(new Event('input', { bubbles: true }));
+    } else if (sourceType === 'legacy' && legacyInput) {
+        legacyInput.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+
+    // Scroll to Level Converter section
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 if (document.readyState === 'loading') {

@@ -1,0 +1,14 @@
+.difficulty-conversion-popup .conversion-value {
+    color: #fff;
+    font-weight: 600;
+}
+
+.difficulty-highlight-line {
+    position: fixed;
+    height: 2px;
+    background: rgba(56, 189, 248, 0.8);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+    pointer-events: none;
+    z-index: 1999;
+    transition: all 0.1s ease-out;
+}
