@@ -103,16 +103,17 @@ function legacyToGg(legacy) {
     return 21 + (legacy - 21) * 5;
 }
 
-function buildGgRanges() {
+function buildGgRanges(heightMultiplierFn = null) {
     const ranges = [];
     for (let i = 0; i < GG_LEVELS.length; i++) {
         const start = GG_LEVELS[i];
         const end = (i + 1 < GG_LEVELS.length) ? GG_LEVELS[i + 1] : start + 0.1;
+        const multiplier = heightMultiplierFn ? heightMultiplierFn(start) : 1;
         ranges.push({
             label: formatGgLabel(start),
             start,
             end,
-            height: DIFFICULTY_BASE_HEIGHT,
+            height: DIFFICULTY_BASE_HEIGHT * multiplier,
             color: GG_COLORS
         });
     }
@@ -138,19 +139,20 @@ function buildTufRanges() {
     return ranges;
 }
 
-function buildLegacyRanges() {
+function buildLegacyRanges(heightMultiplierFn = null) {
     const ranges = [];
     for (let i = 0; i < LEGACY_LEVELS.length; i++) {
         const start = LEGACY_LEVELS[i];
         const end = (i + 1 < LEGACY_LEVELS.length) ? LEGACY_LEVELS[i + 1] : start + 0.05;
         const ggStart = legacyToGg(start);
         const ggEnd = legacyToGg(end);
+        const multiplier = heightMultiplierFn ? heightMultiplierFn(start) : 1;
         ranges.push({
             label: formatLegacyLabel(start),
             start,
             ggStart,
             ggEnd,
-            height: DIFFICULTY_BASE_HEIGHT,
+            height: DIFFICULTY_BASE_HEIGHT * multiplier,
             color: LEGACY_COLORS[start] || '#666'
         });
     }
@@ -186,13 +188,26 @@ function formatLegacyLabel(val) {
 
 function calcHeightByGgRange(ggStart, ggEnd, ggRanges, baseHeight) {
     let totalHeight = 0;
+    let coveredRange = 0;
+
     for (const r of ggRanges) {
         const overlap = Math.max(0, Math.min(r.end, ggEnd) - Math.max(r.start, ggStart));
         if (overlap > 0) {
             const ratio = overlap / (r.end - r.start);
             totalHeight += baseHeight * ratio;
+            coveredRange += overlap;
         }
     }
+
+    // Calculate uncovered range (extends beyond GG levels)
+    const requestedRange = ggEnd - ggStart;
+    const uncoveredRange = requestedRange - coveredRange;
+
+    if (uncoveredRange > 0) {
+        // Add proportional height for the uncovered portion
+        totalHeight += baseHeight * uncoveredRange / 0.1; // 0.1 is typical GG increment
+    }
+
     return Math.max(totalHeight, 1);
 }
 
@@ -202,9 +217,23 @@ function renderDifficultyTable(base = 'gg') {
 
     wrapper.innerHTML = '';
 
-    const ggRanges = buildGgRanges();
-    const tufRanges = buildTufRanges();
-    const legacyRanges = buildLegacyRanges();
+    let ggRanges, tufRanges, legacyRanges;
+
+    if (base === 'gg') {
+        // Double height for GG 20~20.9 section
+        ggRanges = buildGgRanges((start) => (start >= 20 && start < 21) ? 2 : 1);
+        tufRanges = buildTufRanges();
+        legacyRanges = buildLegacyRanges();
+    } else if (base === 'legacy') {
+        // Double height for GG 21+ section (which is Legacy 21+)
+        ggRanges = buildGgRanges((start) => (start >= 21) ? 2 : 1);
+        tufRanges = buildTufRanges();
+        legacyRanges = buildLegacyRanges((start) => (start >= 21) ? 2 : 1);
+    } else {
+        ggRanges = buildGgRanges();
+        tufRanges = buildTufRanges();
+        legacyRanges = buildLegacyRanges();
+    }
 
     let columns = [];
 
@@ -215,10 +244,14 @@ function renderDifficultyTable(base = 'gg') {
             { name: 'TUF (Legacy)', ranges: legacyRanges, type: 'legacy' }
         ];
         for (const r of tufRanges) {
-            r.height = calcHeightByGgRange(r.ggStart, r.ggEnd, ggRanges, DIFFICULTY_BASE_HEIGHT);
+            // Double height for G section (20~20.9 range)
+            const heightMultiplier = (r.ggStart >= 20 && r.ggStart < 21) ? 2 : 1;
+            r.height = calcHeightByGgRange(r.ggStart, r.ggEnd, ggRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
         for (const r of legacyRanges) {
-            r.height = calcHeightByGgRange(r.ggStart, r.ggEnd, ggRanges, DIFFICULTY_BASE_HEIGHT);
+            // Double height for 20~20.9+ range
+            const heightMultiplier = (r.ggStart >= 20 && r.ggStart < 21) ? 2 : 1;
+            r.height = calcHeightByGgRange(r.ggStart, r.ggEnd, ggRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
     } else if (base === 'tuf') {
         for (const r of ggRanges) {
@@ -254,10 +287,14 @@ function renderDifficultyTable(base = 'gg') {
             r.legacyEnd = ggToLegacy(r.ggEnd);
         }
         for (const r of ggRanges) {
-            r.height = calcHeightByLegacyRange(r.legacyStart, r.legacyEnd, legacyRanges, DIFFICULTY_BASE_HEIGHT);
+            // Double height for 21~22.6 range (Legacy 21~21.3+)
+            const heightMultiplier = (r.legacyStart >= 21) ? 2 : 1;
+            r.height = calcHeightByLegacyRange(r.legacyStart, r.legacyEnd, legacyRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
         for (const r of tufRanges) {
-            r.height = calcHeightByLegacyRange(r.legacyStart, r.legacyEnd, legacyRanges, DIFFICULTY_BASE_HEIGHT);
+            // Double height for U section (Legacy 21~21.3+)
+            const heightMultiplier = (r.legacyStart >= 21) ? 2 : 1;
+            r.height = calcHeightByLegacyRange(r.legacyStart, r.legacyEnd, legacyRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
         columns = [
             { name: 'TUF (Legacy)', ranges: legacyRanges, type: 'legacy' },
@@ -266,35 +303,118 @@ function renderDifficultyTable(base = 'gg') {
         ];
     }
 
-    const table = document.createElement('div');
-    table.className = 'difficulty-table';
-
-    for (const col of columns) {
-        const colDiv = document.createElement('div');
-        colDiv.className = 'difficulty-column';
-
-        const header = document.createElement('div');
-        header.className = 'difficulty-column-header';
-        header.textContent = col.name;
-        colDiv.appendChild(header);
-
-        const body = document.createElement('div');
-        body.className = 'difficulty-column-body';
-
-        for (const r of col.ranges) {
-            const box = document.createElement('div');
-            box.className = 'difficulty-box';
-            box.style.height = r.height + 'px';
-            box.style.background = r.color;
-            box.textContent = r.label;
-            body.appendChild(box);
-        }
-
-        colDiv.appendChild(body);
-        table.appendChild(colDiv);
+    // Define better section boundaries based on difficulty tiers
+    const baseColumn = columns[0];
+    let sectionBoundaries;
+    if (base === 'gg') {
+        // For GG: split at 20.0 and 21.0 (P/G/U boundaries)
+        const idx20 = baseColumn.ranges.findIndex(r => r.start >= 20);
+        const idx21 = baseColumn.ranges.findIndex(r => r.start >= 21);
+        sectionBoundaries = [
+            { start: 0, end: idx20 },
+            { start: idx20, end: idx21 },
+            { start: idx21, end: baseColumn.ranges.length }
+        ];
+    } else if (base === 'tuf') {
+        // For TUF: split by prefix (P, G, U)
+        const idxG = baseColumn.ranges.findIndex(r => r.label[0] === 'G');
+        const idxU = baseColumn.ranges.findIndex(r => r.label[0] === 'U');
+        sectionBoundaries = [
+            { start: 0, end: idxG },
+            { start: idxG, end: idxU },
+            { start: idxU, end: baseColumn.ranges.length }
+        ];
+    } else if (base === 'legacy') {
+        // For Legacy: split at 20.0 and 21.0
+        const idx20 = baseColumn.ranges.findIndex(r => r.start >= 20);
+        const idx21 = baseColumn.ranges.findIndex(r => r.start >= 21);
+        sectionBoundaries = [
+            { start: 0, end: idx20 },
+            { start: idx20, end: idx21 },
+            { start: idx21, end: baseColumn.ranges.length }
+        ];
     }
 
-    wrapper.appendChild(table);
+    // Create 3 table sections (horizontally arranged)
+    for (let section = 0; section < 3; section++) {
+        const startIdx = sectionBoundaries[section].start;
+        const endIdx = sectionBoundaries[section].end;
+
+        if (startIdx >= endIdx) continue;
+
+        const table = document.createElement('div');
+        table.className = 'difficulty-table';
+
+        for (let colIdx = 0; colIdx < columns.length; colIdx++) {
+            const col = columns[colIdx];
+            const colDiv = document.createElement('div');
+            colDiv.className = 'difficulty-column';
+
+            const header = document.createElement('div');
+            header.className = 'difficulty-column-header';
+            header.textContent = col.name;
+            colDiv.appendChild(header);
+
+            const body = document.createElement('div');
+            body.className = 'difficulty-column-body';
+
+            let sectionRanges;
+            if (colIdx === 0) {
+                // Base column: just slice normally
+                sectionRanges = col.ranges.slice(startIdx, endIdx);
+            } else {
+                // Other columns: filter by base column's range
+                const baseStart = baseColumn.ranges[startIdx];
+                const baseEnd = baseColumn.ranges[endIdx - 1];
+
+                if (base === 'gg') {
+                    // Base is GG, filter by ggStart/ggEnd
+                    const minGg = baseStart.start;
+                    const maxGg = baseEnd.end;
+                    sectionRanges = col.ranges.filter(r => {
+                        return r.ggStart >= minGg && r.ggStart < maxGg;
+                    });
+                } else if (base === 'tuf') {
+                    // Base is TUF, filter by tufStart/tufEnd
+                    const minTuf = tufToIndex({ prefix: baseStart.label[0], val: parseInt(baseStart.label.substring(1)) });
+                    const maxTuf = tufToIndex({ prefix: baseEnd.label[0], val: parseInt(baseEnd.label.substring(1)) + 1 });
+                    sectionRanges = col.ranges.filter(r => {
+                        let rStart;
+                        if (col.type === 'tuf') {
+                            // This shouldn't happen as TUF is base
+                            rStart = tufToIndex({ prefix: r.label[0], val: parseInt(r.label.substring(1)) });
+                        } else {
+                            // GG or Legacy column
+                            rStart = tufToIndex(r.tufStart);
+                        }
+                        return rStart >= minTuf && rStart < maxTuf;
+                    });
+                } else if (base === 'legacy') {
+                    // Base is Legacy, filter by legacyStart/legacyEnd
+                    const minLegacy = baseStart.start;
+                    // For the last section, include everything beyond the last legacy level
+                    const maxLegacy = (section === 2) ? 999 : (baseEnd.start + 0.05);
+                    sectionRanges = col.ranges.filter(r => {
+                        return r.legacyStart >= minLegacy && r.legacyStart < maxLegacy;
+                    });
+                }
+            }
+
+            for (const r of sectionRanges) {
+                const box = document.createElement('div');
+                box.className = 'difficulty-box';
+                box.style.height = r.height + 'px';
+                box.style.background = r.color;
+                box.textContent = r.label;
+                body.appendChild(box);
+            }
+
+            colDiv.appendChild(body);
+            table.appendChild(colDiv);
+        }
+
+        wrapper.appendChild(table);
+    }
 }
 
 function calcHeightByTufRange(tufStart, tufEnd, tufRanges, baseHeight) {
@@ -328,6 +448,11 @@ function calcHeightByLegacyRange(legacyStart, legacyEnd, legacyRanges, baseHeigh
             const ratio = overlap / (rEnd - r.start);
             totalHeight += baseHeight * ratio;
         }
+    }
+    // If no overlap found (e.g., range is beyond Legacy levels), use proportional height
+    if (totalHeight === 0) {
+        const legacyRange = legacyEnd - legacyStart;
+        totalHeight = baseHeight * legacyRange / 0.05; // 0.05 is typical Legacy increment for high levels
     }
     return Math.max(totalHeight, 1);
 }

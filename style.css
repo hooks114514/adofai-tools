@@ -1177,8 +1177,8 @@ input[type="range"]::-moz-range-thumb {
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     border: 1px solid var(--border-color);
     margin-top: 20px;
-    width: 90%;
-    max-width: 1000px;
+    width: 95%;
+    max-width: 1400px;
 }
 
 .difficulty-info-container h2 {
@@ -1202,24 +1202,32 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .difficulty-table-wrapper {
-    max-height: 600px;
-    overflow-y: auto;
     border-radius: 12px;
     background: rgba(0, 0, 0, 0.2);
     padding: 10px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
 }
 
 .difficulty-table {
     display: flex;
     gap: 8px;
-    min-height: 100%;
+    flex: 1;
+    min-width: 380px;
+}
+
+.difficulty-table:last-child {
+    margin-bottom: 0;
 }
 
 .difficulty-column {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-width: 0;
+    min-width: 80px;
+    max-width: 120px;
 }
 
 .difficulty-column-header {
