@@ -43,11 +43,11 @@ const TUF_COLORS = {
 
 const Q_LEVELS = ['Q0', 'Q1', 'Q2', 'Q3', 'Q4'];
 const Q_COLORS = {
-    'Q0': '#7850b0', 
-    'Q1': '#402860', 
-    'Q2': '#201830', 
-    'Q3': '#000000', 
-    'Q4': '#ffffff'  
+    'Q0': '#7850b0',
+    'Q1': '#402860',
+    'Q2': '#201830',
+    'Q3': '#000000',
+    'Q4': '#ffffff'
 };
 
 
@@ -200,15 +200,15 @@ function formatLegacyLabel(val) {
     if (val === 19.5) return '19+';
     if (Number.isInteger(val)) return val.toString();
     const str = val.toFixed(2);
-    
+
     if (str.endsWith('5')) {
         const baseVal = Math.floor(val);
         const decimal = val - baseVal;
-        
+
         if (Math.abs(decimal - 0.05) < 0.001) {
             return baseVal + '+';
         }
-        
+
         const firstDecimal = Math.floor((decimal - 0.05) * 10 + 0.001);
         return baseVal + '.' + firstDecimal + '+';
     }
@@ -228,13 +228,13 @@ function calcHeightByGgRange(ggStart, ggEnd, ggRanges, baseHeight) {
         }
     }
 
-    
+
     const requestedRange = ggEnd - ggStart;
     const uncoveredRange = requestedRange - coveredRange;
 
     if (uncoveredRange > 0) {
-        
-        totalHeight += baseHeight * uncoveredRange / 0.1; 
+
+        totalHeight += baseHeight * uncoveredRange / 0.1;
     }
 
     return Math.max(totalHeight, 1);
@@ -249,12 +249,12 @@ function renderDifficultyTable(base = 'gg') {
     let ggRanges, tufRanges, legacyRanges;
 
     if (base === 'gg') {
-        
+
         ggRanges = buildGgRanges((start) => (start >= 20 && start < 21) ? 2 : 1);
         tufRanges = buildTufRanges();
         legacyRanges = buildLegacyRanges();
     } else if (base === 'legacy') {
-        
+
         ggRanges = buildGgRanges((start) => (start >= 21) ? 2 : 1);
         tufRanges = buildTufRanges();
         legacyRanges = buildLegacyRanges((start) => (start >= 21) ? 2 : 1);
@@ -273,12 +273,12 @@ function renderDifficultyTable(base = 'gg') {
             { name: 'TUF (L)', ranges: legacyRanges, type: 'legacy' }
         ];
         for (const r of tufRanges) {
-            
+
             const heightMultiplier = (r.ggStart >= 20 && r.ggStart < 21) ? 2 : 1;
             r.height = calcHeightByGgRange(r.ggStart, r.ggEnd, ggRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
         for (const r of legacyRanges) {
-            
+
             const heightMultiplier = (r.ggStart >= 20 && r.ggStart < 21) ? 2 : 1;
             r.height = calcHeightByGgRange(r.ggStart, r.ggEnd, ggRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
@@ -316,12 +316,12 @@ function renderDifficultyTable(base = 'gg') {
             r.legacyEnd = ggToLegacy(r.ggEnd);
         }
         for (const r of ggRanges) {
-            
+
             const heightMultiplier = (r.legacyStart >= 21) ? 2 : 1;
             r.height = calcHeightByLegacyRange(r.legacyStart, r.legacyEnd, legacyRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
         for (const r of tufRanges) {
-            
+
             const heightMultiplier = (r.legacyStart >= 21) ? 2 : 1;
             r.height = calcHeightByLegacyRange(r.legacyStart, r.legacyEnd, legacyRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
@@ -332,11 +332,11 @@ function renderDifficultyTable(base = 'gg') {
         ];
     }
 
-    
+
     const baseColumn = columns[0];
     let sectionBoundaries;
     if (base === 'gg') {
-        
+
         const idx20 = baseColumn.ranges.findIndex(r => r.start >= 20);
         const idx21 = baseColumn.ranges.findIndex(r => r.start >= 21);
         sectionBoundaries = [
@@ -345,7 +345,7 @@ function renderDifficultyTable(base = 'gg') {
             { start: idx21, end: baseColumn.ranges.length }
         ];
     } else if (base === 'tuf') {
-        
+
         const idxG = baseColumn.ranges.findIndex(r => r.label[0] === 'G');
         const idxU = baseColumn.ranges.findIndex(r => r.label[0] === 'U');
         sectionBoundaries = [
@@ -354,7 +354,7 @@ function renderDifficultyTable(base = 'gg') {
             { start: idxU, end: baseColumn.ranges.length }
         ];
     } else if (base === 'legacy') {
-        
+
         const idx20 = baseColumn.ranges.findIndex(r => r.start >= 20);
         const idx21 = baseColumn.ranges.findIndex(r => r.start >= 21);
         sectionBoundaries = [
@@ -364,7 +364,7 @@ function renderDifficultyTable(base = 'gg') {
         ];
     }
 
-    
+
     for (let section = 0; section < 3; section++) {
         const startIdx = sectionBoundaries[section].start;
         const endIdx = sectionBoundaries[section].end;
@@ -377,10 +377,10 @@ function renderDifficultyTable(base = 'gg') {
         for (let colIdx = 0; colIdx < columns.length; colIdx++) {
             const col = columns[colIdx];
 
-            
+
             const visibleColumns = getVisibleColumns();
             if (!visibleColumns[col.type]) {
-                continue; 
+                continue;
             }
 
             const colDiv = document.createElement('div');
@@ -396,15 +396,15 @@ function renderDifficultyTable(base = 'gg') {
 
             let sectionRanges;
             if (colIdx === 0) {
-                
+
                 sectionRanges = col.ranges.slice(startIdx, endIdx);
             } else {
-                
+
                 const baseStart = baseColumn.ranges[startIdx];
                 const baseEnd = baseColumn.ranges[endIdx - 1];
 
                 if (base === 'gg') {
-                    
+
                     const minGg = baseStart.start;
                     const maxGg = baseEnd.end;
                     const isLastSection = (section === 2);
@@ -415,24 +415,24 @@ function renderDifficultyTable(base = 'gg') {
                         return r.ggStart >= minGg && r.ggStart < maxGg;
                     });
                 } else if (base === 'tuf') {
-                    
+
                     const minTuf = tufToIndex({ prefix: baseStart.label[0], val: parseInt(baseStart.label.substring(1)) });
                     const maxTuf = tufToIndex({ prefix: baseEnd.label[0], val: parseInt(baseEnd.label.substring(1)) + 1 });
                     sectionRanges = col.ranges.filter(r => {
                         let rStart;
                         if (col.type === 'tuf') {
-                            
+
                             rStart = tufToIndex({ prefix: r.label[0], val: parseInt(r.label.substring(1)) });
                         } else {
-                            
+
                             rStart = tufToIndex(r.tufStart);
                         }
                         return rStart >= minTuf && rStart < maxTuf;
                     });
                 } else if (base === 'legacy') {
-                    
+
                     const minLegacy = baseStart.start;
-                    
+
                     const maxLegacy = (section === 2) ? 999 : (baseEnd.start + 0.05);
                     sectionRanges = col.ranges.filter(r => {
                         return r.legacyStart >= minLegacy && r.legacyStart < maxLegacy;
@@ -447,10 +447,10 @@ function renderDifficultyTable(base = 'gg') {
                 box.style.background = r.color;
                 box.textContent = r.label;
 
-                
+
                 let useDarkText = false;
                 if (col.type === 'tuf') {
-                    
+
                     if (r.label && r.label.startsWith('P')) {
                         const pNum = parseInt(r.label.substring(1));
                         if (pNum >= 1 && pNum <= 15) {
@@ -458,7 +458,7 @@ function renderDifficultyTable(base = 'gg') {
                         }
                     }
                 } else if (col.type === 'legacy') {
-                    
+
                     if (typeof r.start === 'number' && r.start >= 1 && r.start <= 14) {
                         useDarkText = true;
                     }
@@ -468,33 +468,37 @@ function renderDifficultyTable(base = 'gg') {
                     box.style.textShadow = 'none';
                 }
 
-                
+
                 const tierBoundaries = [21.1, 21.2, 21.3];
                 let addGap = false;
                 if (col.type === 'legacy') {
                     addGap = tierBoundaries.includes(r.start);
                 } else if (col.type === 'gg') {
-                    
+
                     const ggBoundaries = [21.5, 22, 22.5];
                     addGap = ggBoundaries.includes(r.start);
                 } else if (col.type === 'tuf') {
-                    
+
                     addGap = ['U5', 'U9', 'U13'].includes(r.label);
                 }
                 if (addGap) {
                     box.style.marginTop = '4px';
                 }
 
-                
+
                 box.addEventListener('mouseenter', (e) => {
                     const rect = box.getBoundingClientRect();
-                    showDifficultyConversion(r, col.type, rect.right + 10, rect.top);
-                    
+                    const zoom = 0.9;
+                    const topPos = (rect.top + window.scrollY) / zoom;
+                    const leftPos = (rect.left + window.scrollX) / zoom;
+
+                    showDifficultyConversion(r, col.type, (rect.right + 10) / zoom, topPos);
+
                     const columns = table.querySelectorAll('.difficulty-column');
                     if (columns.length > 0) {
                         const firstCol = columns[0].getBoundingClientRect();
                         const lastCol = columns[columns.length - 1].getBoundingClientRect();
-                        showHighlightLine(rect.top, firstCol.left, lastCol.right);
+                        showHighlightLine(topPos, (firstCol.left + window.scrollX) / zoom, (lastCol.right + window.scrollX) / zoom);
                     }
                 });
 
@@ -503,7 +507,7 @@ function renderDifficultyTable(base = 'gg') {
                     hideHighlightLine();
                 });
 
-                
+
                 box.addEventListener('click', () => {
                     fillConverterWithDifficulty(r, col.type);
                 });
@@ -514,9 +518,9 @@ function renderDifficultyTable(base = 'gg') {
             colDiv.appendChild(body);
             table.appendChild(colDiv);
 
-            
+
             if (col.type === 'tuf' && visibleColumns.q) {
-                
+
                 const hasULevels = sectionRanges.some(r => r.label && r.label.startsWith('U'));
                 if (hasULevels) {
                     const qColDiv = document.createElement('div');
@@ -530,23 +534,23 @@ function renderDifficultyTable(base = 'gg') {
                     const qBody = document.createElement('div');
                     qBody.className = 'difficulty-column-body';
 
-                    
+
                     const uLevels = sectionRanges.filter(r => r.label && r.label.startsWith('U'));
 
-                    
+
                     for (let qIdx = 0; qIdx < Q_LEVELS.length; qIdx++) {
                         const qLabel = Q_LEVELS[qIdx];
-                        const uStartNum = qIdx * 4 + 1; 
+                        const uStartNum = qIdx * 4 + 1;
                         const uEndNum = uStartNum + 3;
 
-                        
+
                         const groupULevels = uLevels.filter(r => {
                             const uNum = parseInt(r.label.substring(1));
                             return uNum >= uStartNum && uNum <= uEndNum;
                         });
 
                         if (groupULevels.length > 0) {
-                            
+
                             let qHeight = 0;
                             groupULevels.forEach(r => {
                                 qHeight += r.height;
@@ -558,26 +562,28 @@ function renderDifficultyTable(base = 'gg') {
                             qBox.style.background = Q_COLORS[qLabel] || '#666';
                             qBox.textContent = qLabel;
 
-                            
+
                             if (qLabel === 'Q3' || qLabel === 'Q4') {
                                 qBox.style.color = '#FF0000';
                                 qBox.style.textShadow = 'none';
                             }
 
-                            
+
                             if (qIdx > 0) {
                                 qBox.style.marginTop = '4px';
                             }
 
-                            
+
                             qBox.addEventListener('mouseenter', () => {
                                 const rect = qBox.getBoundingClientRect();
-                                
+                                const zoom = 0.9;
+                                const topPos = (rect.top + window.scrollY) / zoom;
+
                                 const columns = table.querySelectorAll('.difficulty-column');
                                 if (columns.length > 0) {
                                     const firstCol = columns[0].getBoundingClientRect();
                                     const lastCol = columns[columns.length - 1].getBoundingClientRect();
-                                    showHighlightLine(rect.top, firstCol.left, lastCol.right);
+                                    showHighlightLine(topPos, (firstCol.left + window.scrollX) / zoom, (lastCol.right + window.scrollX) / zoom);
                                 }
                             });
 
@@ -594,9 +600,9 @@ function renderDifficultyTable(base = 'gg') {
                 }
             }
 
-            
+
             if (col.type === 'gg' && visibleColumns.gg_group) {
-                
+
                 const has20PlusLevels = sectionRanges.some(r => r.start >= 20);
                 if (has20PlusLevels) {
                     const ggGroupColDiv = document.createElement('div');
@@ -610,21 +616,21 @@ function renderDifficultyTable(base = 'gg') {
                     const ggGroupBody = document.createElement('div');
                     ggGroupBody.className = 'difficulty-column-body';
 
-                    
+
                     const gg20PlusLevels = sectionRanges.filter(r => r.start >= 20);
 
-                    
+
                     for (let gIdx = 0; gIdx < GG_GROUP_LEVELS.length; gIdx++) {
                         const gLabel = GG_GROUP_LEVELS[gIdx];
                         const gRange = GG_GROUP_RANGES[gLabel];
 
-                        
+
                         const groupGGLevels = gg20PlusLevels.filter(r => {
                             return r.start >= gRange.min && r.start <= gRange.max;
                         });
 
                         if (groupGGLevels.length > 0) {
-                            
+
                             let gHeight = 0;
                             groupGGLevels.forEach(r => {
                                 gHeight += r.height;
@@ -636,14 +642,17 @@ function renderDifficultyTable(base = 'gg') {
                             gBox.style.background = GG_GROUP_COLORS[gLabel] || '#666';
                             gBox.textContent = gLabel;
 
-                            
+
                             gBox.addEventListener('mouseenter', () => {
                                 const rect = gBox.getBoundingClientRect();
+                                const zoom = 0.9;
+                                const topPos = (rect.top + window.scrollY) / zoom;
+
                                 const columns = table.querySelectorAll('.difficulty-column');
                                 if (columns.length > 0) {
                                     const firstCol = columns[0].getBoundingClientRect();
                                     const lastCol = columns[columns.length - 1].getBoundingClientRect();
-                                    showHighlightLine(rect.top, firstCol.left, lastCol.right);
+                                    showHighlightLine(topPos, (firstCol.left + window.scrollX) / zoom, (lastCol.right + window.scrollX) / zoom);
                                 }
                             });
 
@@ -651,7 +660,7 @@ function renderDifficultyTable(base = 'gg') {
                                 hideHighlightLine();
                             });
 
-                            
+
                             if (['21+', '22', '22+'].includes(gLabel)) {
                                 gBox.style.marginTop = '4px';
                             }
@@ -702,10 +711,10 @@ function calcHeightByLegacyRange(legacyStart, legacyEnd, legacyRanges, baseHeigh
             totalHeight += baseHeight * ratio;
         }
     }
-    
+
     if (totalHeight === 0) {
         const legacyRange = legacyEnd - legacyStart;
-        totalHeight = baseHeight * legacyRange / 0.05; 
+        totalHeight = baseHeight * legacyRange / 0.05;
     }
     return Math.max(totalHeight, 1);
 }
@@ -730,7 +739,7 @@ function initDifficultyInfo() {
 
 function getColumnOrder(base) {
     if (base === 'gg') {
-        
+
         return [
             { key: 'gg_group', name: 'N' },
             { key: 'tuf', name: 'TUF' },
@@ -738,15 +747,15 @@ function getColumnOrder(base) {
             { key: 'legacy', name: 'TUF (L)' }
         ];
     } else if (base === 'tuf') {
-        
+
         return [
             { key: 'q', name: 'Q' },
             { key: 'gg', name: 'ADOFAI.gg' },
             { key: 'gg_group', name: 'N' },
             { key: 'legacy', name: 'TUF (L)' }
         ];
-    } else { 
-        
+    } else {
+
         return [
             { key: 'gg', name: 'ADOFAI.gg' },
             { key: 'gg_group', name: 'N' },
@@ -765,13 +774,13 @@ function renderColumnToggles(base) {
 
     togglesContainer.innerHTML = '';
 
-    
+
     const label = document.createElement('span');
     label.className = 'toggle-label-text';
     label.textContent = t('difficulty_info.show_columns');
     togglesContainer.appendChild(label);
 
-    
+
     const columnOrder = getColumnOrder(base);
     for (const col of columnOrder) {
         const btn = document.createElement('button');
@@ -804,7 +813,7 @@ function getCurrentBase() {
 function getVisibleColumns() {
     const base = getCurrentBase();
     const visible = { ...columnVisibility };
-    
+
     visible[base] = true;
     return visible;
 }
@@ -853,15 +862,17 @@ function showDifficultyConversion(range, sourceType, x, y) {
     document.body.appendChild(popup);
 
     const rect = popup.getBoundingClientRect();
-    let left = x + 10;
-    let top = y + 10;
+    const zoom = 0.9;
 
-    if (left + rect.width > window.innerWidth) left = x - rect.width - 10;
-    if (top + rect.height > window.innerHeight) top = y - rect.height - 10;
+    let left = x;
+    let top = y;
+
+    if ((left * zoom) + rect.width > window.innerWidth - 20) {
+        left = x - (rect.width / zoom) - 20;
+    }
 
     popup.style.left = left + 'px';
     popup.style.top = top + 'px';
-
 }
 
 function hideDifficultyConversion() {
@@ -874,6 +885,7 @@ function showHighlightLine(top, left, right) {
     if (!line) {
         line = document.createElement('div');
         line.className = 'difficulty-highlight-line';
+        line.style.pointerEvents = 'none';
         document.body.appendChild(line);
     }
 
@@ -904,7 +916,7 @@ function fillConverterWithDifficulty(range, sourceType) {
         if (legacyInput) legacyInput.value = range.start;
     }
 
-    
+
     if (sourceType === 'gg' && ggInput) {
         ggInput.dispatchEvent(new Event('input', { bubbles: true }));
     } else if (sourceType === 'tuf' && tufInput) {
@@ -914,7 +926,7 @@ function fillConverterWithDifficulty(range, sourceType) {
     }
 
 
-    
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
