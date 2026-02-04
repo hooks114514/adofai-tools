@@ -258,14 +258,20 @@ function syncList(type, val) {
         data = tufData;
         let targetLabel = "";
 
-        const match = val.match(/^([PGU])\s*([\d.]+)$/);
+        const match = val.match(/^([PGUQ])\s*([\d.]+)$/);
         if (match) {
             const prefix = match[1];
             let num = Math.floor(parseFloat(match[2]));
-            if (num > 20) num = 20;
-            targetLabel = prefix + num;
+            if (prefix === 'Q') {
+                if (num > 4) num = 4;
+                targetLabel = 'Q' + num;
+            } else {
+                if (num > 20) num = 20;
+                targetLabel = prefix + num;
+            }
         } else {
             if (data.find(d => d.value === val)) targetLabel = val;
+            else if (val.toUpperCase().startsWith('Q')) targetLabel = 'Q0';
         }
 
         updateCustomSelectDisplay('tuf', targetLabel);
@@ -332,6 +338,26 @@ function updateFromTUF() {
     syncList('tuf', tufStr);
 
     if (!tufStr) return;
+
+    const qMatch = tufStr.match(/^Q\s*(\d+)?$/);
+    if (qMatch) {
+        let qLevel = qMatch[1] !== undefined ? parseInt(qMatch[1]) : 0;
+        if (qLevel < 0) qLevel = 0;
+        if (qLevel > 4) qLevel = 4;
+
+        let gg = 0, legacy = 0;
+        if (qLevel === 0) { gg = 21; legacy = 21; }
+        else if (qLevel === 1) { gg = 21.5; legacy = 21.1; }
+        else if (qLevel === 2) { gg = 22; legacy = 21.2; }
+        else if (qLevel === 3) { gg = 22.5; legacy = 21.3; }
+        else if (qLevel === 4) { gg = 23; legacy = 21.4; }
+
+        ggInput.value = gg;
+        legacyInput.value = legacy;
+        syncList('gg', gg);
+        syncList('legacy', legacy);
+        return;
+    }
 
     const match = tufStr.match(/^([PGU])\s*([\d.]+)$/);
     if (!match) return;

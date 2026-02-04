@@ -1,0 +1,63 @@
+.difficulty-conversion-popup {
+    position: fixed;
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 12px;
+    padding: 15px 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    min-width: 200px;
+    animation: popupFadeIn 0.2s ease-out;
+    pointer-events: auto;
+}
+
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.difficulty-conversion-popup h3 {
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.difficulty-conversion-popup .conversion-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+}
+
+.difficulty-conversion-popup .conversion-item:last-child {
+    margin-bottom: 0;
+}
+
+.difficulty-conversion-popup .conversion-label {
+    color: #94a3b8;
+    margin-right: 15px;
+}
+
+.difficulty-conversion-popup .conversion-value {
+    color: #fff;
+    font-weight: 600;
+}
+
+.difficulty-box {
+    cursor: pointer;
+}
+
+.difficulty-box:hover {
+    filter: brightness(1.15);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+}

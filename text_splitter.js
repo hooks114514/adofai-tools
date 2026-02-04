@@ -6,11 +6,15 @@ let splitterTags = [];
 let selectedIndices = new Set();
 let lastSelectedIndex = -1;
 let isEditing = false;
+let splitterInitialized = false;
 
 function initTextSplitter() {
     renderTags();
     updateSplitterPreview();
     startPreviewCycle();
+
+    if (splitterInitialized) return;
+    splitterInitialized = true;
 
     document.addEventListener('keydown', (e) => {
         const splitterTab = document.getElementById('tab-splitter');
@@ -79,7 +83,7 @@ function handleFontUpload(input) {
                 updateSplitterPreview();
             }).catch(function (error) {
                 console.error('Font loading failed:', error);
-                showAlert('Font loading failed.');
+                showAlert(t('text_splitter.error_font_load'));
             });
         };
         reader.readAsArrayBuffer(file);
@@ -182,7 +186,7 @@ function deleteSelectedTags() {
 
 async function clearAllTags() {
     if (splitterTags.length === 0) return;
-    const confirmed = await showConfirm("Are you sure you want to clear all tags?");
+    const confirmed = await showConfirm(t('text_splitter.confirm_clear'));
     if (confirmed) {
         splitterTags = [];
         selectedIndices.clear();
@@ -198,7 +202,7 @@ function renderTags() {
     if (!container) return;
 
     if (splitterTags.length === 0) {
-        container.innerHTML = '<span class="placeholder-text">No tags added yet.</span>';
+        container.innerHTML = `<span class="placeholder-text">${t('text_splitter.no_tags')}</span>`;
         return;
     }
 
@@ -214,14 +218,7 @@ function renderTags() {
 
         tagEl.oncontextmenu = (e) => {
             e.preventDefault();
-            if (selectedIndices.has(index)) {
-                deleteSelectedTags();
-            } else {
-                splitterTags.splice(index, 1);
-                selectedIndices.clear();
-                renderTags();
-                updateSplitterPreview();
-            }
+            handleTagClick(index, e);
         };
 
         const textSpan = document.createElement('span');
@@ -247,6 +244,10 @@ function renderTags() {
 function handleTagClick(index, e) {
     e.stopPropagation();
     if (isEditing) return;
+
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+        document.activeElement.blur();
+    }
 
     if (e.ctrlKey) {
         if (selectedIndices.has(index)) {
@@ -404,7 +405,7 @@ function updateSplitterPreview() {
     const warningEl = document.getElementById('preview_warning');
     if (truncatedIndices.length > 0) {
         warningEl.style.display = 'block';
-        warningEl.innerText = `⚠️ ${truncatedIndices.length}개의 텍스트가 잘렸습니다! (클릭하여 확인)`;
+        warningEl.innerText = t('text_splitter.warning_clipped', { count: truncatedIndices.length });
         warningEl.style.cursor = 'pointer';
         warningEl.onclick = () => {
             let nextIndex = truncatedIndices.find(i => i > currentCharIndex);
@@ -420,11 +421,14 @@ function updateSplitterPreview() {
 
     if (previewTag) {
         ctx.save();
+        
         ctx.globalCompositeOperation = 'destination-out';
         ctx.fillStyle = 'rgba(0,0,0,1)';
         ctx.fillText(previewTag, centerX, centerY);
         ctx.restore();
 
+        
+        
         ctx.fillStyle = hexToRgba(textColorHex, textOpacity / 100);
         ctx.fillText(previewTag, centerX, centerY);
     }
@@ -463,12 +467,12 @@ async function generateSplitterZip() {
     const status = document.getElementById('splitter_status');
 
     if (splitterTags.length === 0) {
-        status.innerText = "Please add some tags first.";
+        status.innerText = t('text_splitter.status_add_tags');
         status.style.color = "#ef4444";
         return;
     }
 
-    status.innerText = "Generating ZIP...";
+    status.innerText = t('text_splitter.status_generating');
     status.style.color = "var(--accent-color)";
 
     try {
@@ -481,10 +485,12 @@ async function generateSplitterZip() {
         for (const tag of splitterTags) {
             offCtx.clearRect(0, 0, width, height);
 
+            
             offCtx.globalCompositeOperation = 'source-over';
             offCtx.fillStyle = hexToRgba(bgColorHex, bgOpacity);
             offCtx.fillRect(0, 0, width, height);
 
+            
             offCtx.globalCompositeOperation = 'destination-out';
             offCtx.fillStyle = 'rgba(0,0,0,1)';
             offCtx.font = `${height * 0.8 * scale}px "${loadedFontName}"`;
@@ -492,6 +498,7 @@ async function generateSplitterZip() {
             offCtx.textBaseline = 'middle';
             offCtx.fillText(tag, width / 2 + xOffset, height / 2 + yOffset);
 
+            
             offCtx.globalCompositeOperation = 'source-over';
             offCtx.fillStyle = hexToRgba(textColorHex, textOpacity);
             offCtx.fillText(tag, width / 2 + xOffset, height / 2 + yOffset);
@@ -506,18 +513,16 @@ async function generateSplitterZip() {
         link.download = `${zipName}.zip`;
         link.click();
 
-        status.innerText = "Download ready!";
-        status.style.color = "#10b981";
+        status.innerText = "";
     } catch (err) {
         console.error(err);
-        status.innerText = "Error generating ZIP.";
+        status.innerText = t('text_splitter.status_error');
         status.style.color = "#ef4444";
     }
 }
 
 async function autoFitWidth() {
     if (splitterTags.length === 0) {
-        await showAlert("태그를 먼저 추가해주세요.");
         return;
     }
 
