@@ -23,10 +23,6 @@ function initConverter() {
         }
     });
 
-    for (let i = 0; i <= 4; i++) {
-        tufData.push({ label: 'Q' + i, value: 'Q' + i });
-    }
-
 
     for (let i = 1; i <= 18; i++) {
         legacyData.push({ label: i.toString(), value: i });

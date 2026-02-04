@@ -40,6 +40,35 @@ const TUF_COLORS = {
     'U16': '#181028', 'U17': '#101020', 'U18': '#100810', 'U19': '#080808', 'U20': '#000000'
 };
 
+// Q levels group U levels: Q0=U1-U4, Q1=U5-U8, Q2=U9-U12, Q3=U13-U16, Q4=U17-U20
+const Q_LEVELS = ['Q0', 'Q1', 'Q2', 'Q3', 'Q4'];
+const Q_COLORS = {
+    'Q0': '#7850b0', // Same as U1
+    'Q1': '#402860', // Same as U10
+    'Q2': '#201830', // Same as U15
+    'Q3': '#000000', // Same as U20
+    'Q4': '#ffffff'  // White
+};
+
+// GG group levels: 20=20.0~20.4, 20+=20.5~20.9, 21=21.0~21.4, 21+=21.5~21.9, 22=22.0~22.4, 22+=22.5~22.6
+const GG_GROUP_LEVELS = ['20', '20+', '21', '21+', '22', '22+'];
+const GG_GROUP_RANGES = {
+    '20': { min: 20.0, max: 20.4 },
+    '20+': { min: 20.5, max: 20.9 },
+    '21': { min: 21.0, max: 21.4 },
+    '21+': { min: 21.5, max: 21.9 },
+    '22': { min: 22.0, max: 22.4 },
+    '22+': { min: 22.5, max: 22.6 }
+};
+const GG_GROUP_COLORS = {
+    '20': '#3f466d',
+    '20+': '#4a5280',
+    '21': '#556090',
+    '21+': '#6070a0',
+    '22': '#7080b0',
+    '22+': '#8090c0'
+};
+
 const GG_COLORS = '#3f466dff';
 
 const LEGACY_COLORS = {
@@ -241,7 +270,7 @@ function renderDifficultyTable(base = 'gg') {
         columns = [
             { name: 'ADOFAI.gg', ranges: ggRanges, type: 'gg' },
             { name: 'TUF', ranges: tufRanges, type: 'tuf' },
-            { name: 'TUF (Legacy)', ranges: legacyRanges, type: 'legacy' }
+            { name: 'TUF (L)', ranges: legacyRanges, type: 'legacy' }
         ];
         for (const r of tufRanges) {
             // Double height for G section (20~20.9 range)
@@ -275,7 +304,7 @@ function renderDifficultyTable(base = 'gg') {
         columns = [
             { name: 'TUF', ranges: tufRanges, type: 'tuf' },
             { name: 'ADOFAI.gg', ranges: ggRanges, type: 'gg' },
-            { name: 'TUF (Legacy)', ranges: legacyRanges, type: 'legacy' }
+            { name: 'TUF (L)', ranges: legacyRanges, type: 'legacy' }
         ];
     } else if (base === 'legacy') {
         for (const r of ggRanges) {
@@ -297,7 +326,7 @@ function renderDifficultyTable(base = 'gg') {
             r.height = calcHeightByLegacyRange(r.legacyStart, r.legacyEnd, legacyRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
         columns = [
-            { name: 'TUF (Legacy)', ranges: legacyRanges, type: 'legacy' },
+            { name: 'TUF (L)', ranges: legacyRanges, type: 'legacy' },
             { name: 'ADOFAI.gg', ranges: ggRanges, type: 'gg' },
             { name: 'TUF', ranges: tufRanges, type: 'tuf' }
         ];
@@ -347,6 +376,13 @@ function renderDifficultyTable(base = 'gg') {
 
         for (let colIdx = 0; colIdx < columns.length; colIdx++) {
             const col = columns[colIdx];
+
+            // Check if this column should be visible
+            const visibleColumns = getVisibleColumns();
+            if (!visibleColumns[col.type]) {
+                continue; // Skip hidden columns
+            }
+
             const colDiv = document.createElement('div');
             colDiv.className = 'difficulty-column';
 
@@ -411,6 +447,27 @@ function renderDifficultyTable(base = 'gg') {
                 box.style.background = r.color;
                 box.textContent = r.label;
 
+                // Use dark text for bright backgrounds
+                let useDarkText = false;
+                if (col.type === 'tuf') {
+                    // TUF P1-P15 have bright backgrounds
+                    if (r.label && r.label.startsWith('P')) {
+                        const pNum = parseInt(r.label.substring(1));
+                        if (pNum >= 1 && pNum <= 15) {
+                            useDarkText = true;
+                        }
+                    }
+                } else if (col.type === 'legacy') {
+                    // Legacy 1-14 have bright backgrounds
+                    if (typeof r.start === 'number' && r.start >= 1 && r.start <= 14) {
+                        useDarkText = true;
+                    }
+                }
+                if (useDarkText) {
+                    box.style.color = '#000';
+                    box.style.textShadow = 'none';
+                }
+
                 // Add small gap at tier boundaries (21.1, 21.2, 21.3)
                 const tierBoundaries = [21.1, 21.2, 21.3];
                 let addGap = false;
@@ -456,6 +513,157 @@ function renderDifficultyTable(base = 'gg') {
 
             colDiv.appendChild(body);
             table.appendChild(colDiv);
+
+            // Add Q column after TUF column in U section only
+            if (col.type === 'tuf' && visibleColumns.q) {
+                // Check if this section contains U levels
+                const hasULevels = sectionRanges.some(r => r.label && r.label.startsWith('U'));
+                if (hasULevels) {
+                    const qColDiv = document.createElement('div');
+                    qColDiv.className = 'difficulty-column difficulty-column-q';
+
+                    const qHeader = document.createElement('div');
+                    qHeader.className = 'difficulty-column-header';
+                    qHeader.textContent = 'Q';
+                    qColDiv.appendChild(qHeader);
+
+                    const qBody = document.createElement('div');
+                    qBody.className = 'difficulty-column-body';
+
+                    // Filter only U levels from sectionRanges
+                    const uLevels = sectionRanges.filter(r => r.label && r.label.startsWith('U'));
+
+                    // Group U levels into Q groups (4 levels each)
+                    for (let qIdx = 0; qIdx < Q_LEVELS.length; qIdx++) {
+                        const qLabel = Q_LEVELS[qIdx];
+                        const uStartNum = qIdx * 4 + 1; // Q0: 1-4, Q1: 5-8, etc.
+                        const uEndNum = uStartNum + 3;
+
+                        // Find U levels that belong to this Q group
+                        const groupULevels = uLevels.filter(r => {
+                            const uNum = parseInt(r.label.substring(1));
+                            return uNum >= uStartNum && uNum <= uEndNum;
+                        });
+
+                        if (groupULevels.length > 0) {
+                            // Calculate total height for this Q box (sum of U level heights only)
+                            let qHeight = 0;
+                            groupULevels.forEach(r => {
+                                qHeight += r.height;
+                            });
+
+                            const qBox = document.createElement('div');
+                            qBox.className = 'difficulty-box difficulty-box-q';
+                            qBox.style.height = qHeight + 'px';
+                            qBox.style.background = Q_COLORS[qLabel] || '#666';
+                            qBox.textContent = qLabel;
+
+                            // Add text color for Q3 and Q4 (red)
+                            if (qLabel === 'Q3' || qLabel === 'Q4') {
+                                qBox.style.color = '#FF0000';
+                                qBox.style.textShadow = 'none';
+                            }
+
+                            // Add gap for Q1, Q2, Q3, Q4 (same as U5, U9, U13, U17)
+                            if (qIdx > 0) {
+                                qBox.style.marginTop = '4px';
+                            }
+
+                            // Add hover event for highlight line
+                            qBox.addEventListener('mouseenter', () => {
+                                const rect = qBox.getBoundingClientRect();
+                                // Show line across this table section's columns
+                                const columns = table.querySelectorAll('.difficulty-column');
+                                if (columns.length > 0) {
+                                    const firstCol = columns[0].getBoundingClientRect();
+                                    const lastCol = columns[columns.length - 1].getBoundingClientRect();
+                                    showHighlightLine(rect.top, firstCol.left, lastCol.right);
+                                }
+                            });
+
+                            qBox.addEventListener('mouseleave', () => {
+                                hideHighlightLine();
+                            });
+
+                            qBody.appendChild(qBox);
+                        }
+                    }
+
+                    qColDiv.appendChild(qBody);
+                    table.appendChild(qColDiv);
+                }
+            }
+
+            // Add GG Group column after ADOFAI.gg column in 20+ section only
+            if (col.type === 'gg' && visibleColumns.gg_group) {
+                // Check if this section contains 20+ levels
+                const has20PlusLevels = sectionRanges.some(r => r.start >= 20);
+                if (has20PlusLevels) {
+                    const ggGroupColDiv = document.createElement('div');
+                    ggGroupColDiv.className = 'difficulty-column difficulty-column-q';
+
+                    const ggGroupHeader = document.createElement('div');
+                    ggGroupHeader.className = 'difficulty-column-header';
+                    ggGroupHeader.textContent = 'N';
+                    ggGroupColDiv.appendChild(ggGroupHeader);
+
+                    const ggGroupBody = document.createElement('div');
+                    ggGroupBody.className = 'difficulty-column-body';
+
+                    // Filter only 20+ levels from sectionRanges
+                    const gg20PlusLevels = sectionRanges.filter(r => r.start >= 20);
+
+                    // Group GG levels into groups
+                    for (let gIdx = 0; gIdx < GG_GROUP_LEVELS.length; gIdx++) {
+                        const gLabel = GG_GROUP_LEVELS[gIdx];
+                        const gRange = GG_GROUP_RANGES[gLabel];
+
+                        // Find GG levels that belong to this group
+                        const groupGGLevels = gg20PlusLevels.filter(r => {
+                            return r.start >= gRange.min && r.start <= gRange.max;
+                        });
+
+                        if (groupGGLevels.length > 0) {
+                            // Calculate total height for this group box
+                            let gHeight = 0;
+                            groupGGLevels.forEach(r => {
+                                gHeight += r.height;
+                            });
+
+                            const gBox = document.createElement('div');
+                            gBox.className = 'difficulty-box difficulty-box-q';
+                            gBox.style.height = gHeight + 'px';
+                            gBox.style.background = GG_GROUP_COLORS[gLabel] || '#666';
+                            gBox.textContent = gLabel;
+
+                            // Add hover event for highlight line
+                            gBox.addEventListener('mouseenter', () => {
+                                const rect = gBox.getBoundingClientRect();
+                                const columns = table.querySelectorAll('.difficulty-column');
+                                if (columns.length > 0) {
+                                    const firstCol = columns[0].getBoundingClientRect();
+                                    const lastCol = columns[columns.length - 1].getBoundingClientRect();
+                                    showHighlightLine(rect.top, firstCol.left, lastCol.right);
+                                }
+                            });
+
+                            gBox.addEventListener('mouseleave', () => {
+                                hideHighlightLine();
+                            });
+
+                            // Add gap for groups that start at tier boundaries (21.5, 22.0, 22.5)
+                            if (['21+', '22', '22+'].includes(gLabel)) {
+                                gBox.style.marginTop = '4px';
+                            }
+
+                            ggGroupBody.appendChild(gBox);
+                        }
+                    }
+
+                    ggGroupColDiv.appendChild(ggGroupBody);
+                    table.appendChild(ggGroupColDiv);
+                }
+            }
         }
 
         wrapper.appendChild(table);
@@ -509,11 +717,96 @@ function initDifficultyInfo() {
             btn.addEventListener('click', () => {
                 selector.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
+                renderColumnToggles(btn.dataset.base);
                 renderDifficultyTable(btn.dataset.base);
             });
         });
     }
+
+    renderColumnToggles('gg');
     renderDifficultyTable('gg');
+}
+
+// Column definitions for each base type (in display order, excluding base column)
+function getColumnOrder(base) {
+    if (base === 'gg') {
+        // Table order: ADOFAI.gg | N | TUF | Q | TUF(L)
+        return [
+            { key: 'gg_group', name: 'N' },
+            { key: 'tuf', name: 'TUF' },
+            { key: 'q', name: 'Q' },
+            { key: 'legacy', name: 'TUF (L)' }
+        ];
+    } else if (base === 'tuf') {
+        // Table order: TUF | Q | ADOFAI.gg | N | TUF(L)
+        return [
+            { key: 'q', name: 'Q' },
+            { key: 'gg', name: 'ADOFAI.gg' },
+            { key: 'gg_group', name: 'N' },
+            { key: 'legacy', name: 'TUF (L)' }
+        ];
+    } else { // legacy
+        // Table order: TUF(L) | ADOFAI.gg | N | TUF | Q
+        return [
+            { key: 'gg', name: 'ADOFAI.gg' },
+            { key: 'gg_group', name: 'N' },
+            { key: 'tuf', name: 'TUF' },
+            { key: 'q', name: 'Q' }
+        ];
+    }
+}
+
+// Store visibility state globally
+let columnVisibility = { gg: true, gg_group: true, tuf: true, q: true, legacy: true };
+
+function renderColumnToggles(base) {
+    const togglesContainer = document.getElementById('difficulty-column-toggles');
+    if (!togglesContainer) return;
+
+    togglesContainer.innerHTML = '';
+
+    // Add label
+    const label = document.createElement('span');
+    label.className = 'toggle-label-text';
+    label.textContent = t('difficulty_info.show_columns');
+    togglesContainer.appendChild(label);
+
+    // Add toggle buttons in order (excluding base column)
+    const columnOrder = getColumnOrder(base);
+    for (const col of columnOrder) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'column-toggle-btn';
+        btn.dataset.column = col.key;
+        btn.textContent = col.name;
+
+        if (columnVisibility[col.key]) {
+            btn.classList.add('active');
+        }
+
+        btn.addEventListener('click', () => {
+            columnVisibility[col.key] = !columnVisibility[col.key];
+            btn.classList.toggle('active');
+            renderDifficultyTable(getCurrentBase());
+        });
+
+        togglesContainer.appendChild(btn);
+    }
+}
+
+function getCurrentBase() {
+    const selector = document.getElementById('difficulty-base-selector');
+    if (!selector) return 'gg';
+    const activeBtn = selector.querySelector('.segment-btn.active');
+    return activeBtn ? activeBtn.dataset.base : 'gg';
+}
+
+function getVisibleColumns() {
+    const base = getCurrentBase();
+    const visible = { ...columnVisibility };
+    // Base column is always visible
+    visible[base] = true;
+    return visible;
 }
 
 function showDifficultyConversion(range, sourceType, x, y) {

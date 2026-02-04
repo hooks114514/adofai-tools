@@ -21,6 +21,7 @@ body {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     padding-top: 20px;
+    zoom: 0.9;
 }
 
 html {
@@ -1287,27 +1288,83 @@ input[type="range"]::-moz-range-thumb {
     font-size: 0.85rem;
 }
 
+/* Column visibility toggles */
+.difficulty-column-toggles {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.difficulty-column-toggles .toggle-label-text {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-right: 4px;
+}
+
+.column-toggle-btn {
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+}
+
+.column-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+}
+
+.column-toggle-btn.active {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: rgba(56, 189, 248, 0.4);
+    color: var(--accent-color);
+}
+
+.column-toggle-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
 .difficulty-table-wrapper {
     border-radius: 12px;
     background: rgba(0, 0, 0, 0.2);
     padding: 10px;
     display: flex;
-    gap: 10px;
+    gap: 60px;
     flex-wrap: nowrap;
     overflow-x: auto;
+    justify-content: center;
 }
 
 .difficulty-table {
     display: flex;
-    gap: 8px;
-    flex: 1;
-    min-width: 380px;
+    gap: 4px;
+    flex: 0 0 auto;
+    min-width: auto;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .difficulty-table:last-child {
     margin-bottom: 0;
+}
+
+/* Separator line between table sections - centered in gap */
+.difficulty-table:not(:first-child)::before {
+    content: '';
+    position: absolute;
+    left: -31px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.10);
 }
 
 .difficulty-column {
@@ -1316,6 +1373,13 @@ input[type="range"]::-moz-range-thumb {
     flex-direction: column;
     min-width: 80px;
     max-width: 120px;
+}
+
+/* Q column - narrower width */
+.difficulty-column-q {
+    flex: 0 0 auto;
+    min-width: 35px;
+    max-width: 45px;
 }
 
 .difficulty-column-header {

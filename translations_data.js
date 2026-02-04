@@ -70,7 +70,8 @@ const TRANSLATIONS = {
             "error_font_load": "Font loading failed."
         },
         "difficulty_info": {
-            "title": "Difficulty Info"
+            "title": "Difficulty Info",
+            "show_columns": "Show:"
         },
         "modal": {
             "confirm": "Confirm",
@@ -151,7 +152,8 @@ const TRANSLATIONS = {
             "error_font_load": "폰트 로드에 실패했습니다."
         },
         "difficulty_info": {
-            "title": "난도 정보"
+            "title": "난도 정보",
+            "show_columns": "표시:"
         },
         "modal": {
             "confirm": "확인",
