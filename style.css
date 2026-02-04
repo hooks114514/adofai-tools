@@ -45,7 +45,7 @@ html {
     box-sizing: border-box;
 }
 
-/* Global consistency */
+
 
 .main-wrapper {
     display: flex;
@@ -57,7 +57,7 @@ html {
 
 .container {
     flex: 1 0 40%;
-    /* Solid basis percentage */
+    
     background: var(--container-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -69,7 +69,7 @@ html {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    /* Ensure padding doesn't affect basis calculation */
+    
 }
 
 .level-converter-container {
@@ -92,7 +92,7 @@ html {
 
 .visual-container {
     flex: 1.5 0 55%;
-    /* Solid basis percentage */
+    
     background: var(--container-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -153,7 +153,7 @@ h1 {
     letter-spacing: -0.5px;
     font-size: 1.5rem;
     height: 1.8rem;
-    /* Fix title height */
+    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -306,7 +306,7 @@ input:checked+.slider:before {
 
 .segment-btn {
     height: 42px;
-    /* Fixed height for consistent control size */
+    
 }
 
 
@@ -343,9 +343,9 @@ label {
     color: #94a3b8;
     font-weight: 500;
     height: 1.2rem;
-    /* Fixed height for labels */
+    
     white-space: nowrap;
-    /* Prevent line wrapping */
+    
 }
 
 input,
@@ -388,7 +388,7 @@ input[type=text] {
     color: var(--accent-color);
     width: 45px;
     height: 48px;
-    /* Match input height */
+    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -562,7 +562,7 @@ canvas {
     color: #94a3b8;
     padding: 0 24px;
     height: 44px;
-    /* Fixed height for tabs */
+    
     border-radius: 12px;
     cursor: pointer;
     font-size: 1rem;
@@ -906,7 +906,7 @@ textarea.modal-input {
     padding: 0 20px;
     height: 36px;
     margin-top: 4px;
-    /* Increased height from original implicitly calculated one */
+    
     border-radius: 10px;
     cursor: pointer;
     font-size: 0.95rem;
@@ -941,7 +941,7 @@ input[type="range"]:focus {
     box-shadow: none;
 }
 
-/* Chrome, Safari, Edge, Opera */
+
 input[type="range"]::-webkit-slider-runnable-track {
     width: 100%;
     height: 6px;
@@ -959,7 +959,7 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 50%;
     cursor: pointer;
     margin-top: -6px;
-    /* (Track Height / 2) - (Thumb Height / 2) => (6/2) - (18/2) = 3 - 9 = -6px */
+    
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
     transition: transform 0.2s;
 }
@@ -968,7 +968,7 @@ input[type="range"]:active::-webkit-slider-thumb {
     transform: scale(1.2);
 }
 
-/* Firefox */
+
 input[type="range"]::-moz-range-track {
     width: 100%;
     height: 6px;
@@ -998,21 +998,21 @@ input[type="range"]::-moz-range-thumb {
     background-color: #000;
 }
 
-/* Splitter Tab Styles */
+
 #tab-splitter .input-group {
     margin-bottom: 10px;
-    /* Reduced from 12px */
+    
 }
 
 #tab-splitter .converter-row {
     margin-bottom: 10px;
-    /* Reduced from 12px */
+    
 }
 
 #tab-splitter .title-with-help {
     margin-top: 5px;
     margin-bottom: 25px;
-    /* Further reduced from 24px */
+    
 }
 
 #tab-splitter .title-with-help h1 {
@@ -1028,14 +1028,14 @@ input[type="range"]::-moz-range-thumb {
 #tab-splitter textarea,
 #tab-splitter select {
     padding: 8px 12px;
-    /* Reduced from 10px */
+    
     font-size: 0.9rem;
 }
 
 #tab-splitter input,
 #tab-splitter textarea {
     padding: 8px 14px;
-    /* Reduced from 10px */
+    
     font-size: 0.95rem;
 }
 
@@ -1050,26 +1050,26 @@ input[type="range"]::-moz-range-thumb {
 
 #tab-splitter .input-group:last-child {
     margin-top: 5px;
-    /* Reduced from 10px */
+    
 }
 
 .splitter-wrapper {
     max-width: 1400px !important;
     width: 95% !important;
     height: 780px;
-    /* Fixed height to prevent language-switch jitter */
+    
 }
 
 .splitter-wrapper .container {
     flex: 1 0 32%;
     min-width: 320px;
     height: 100%;
-    /* Fill the fixed height wrapper */
+    
     box-sizing: border-box;
     overflow-y: hidden;
-    /* Try to hide scrollbar if close enough */
+    
     padding: 20px 25px;
-    /* Reduced padding from 30px */
+    
 }
 
 .splitter-wrapper .visual-container.preview-col {
@@ -1196,16 +1196,16 @@ input[type="range"]::-moz-range-thumb {
     min-width: 5px;
 }
 
-/* Language Switcher */
+
 .lang-switcher {
     display: flex;
     gap: 8px;
     align-items: center;
     margin-left: 15px;
     flex-shrink: 0;
-    /* Prevent language switcher from shrinking */
+    
     width: 80px;
-    /* Fixed width for stability */
+    
     justify-content: flex-end;
 }
 
@@ -1231,7 +1231,7 @@ input[type="range"]::-moz-range-thumb {
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
 }
 
-/* Difficulty Info Table */
+
 .converter-scroll-wrapper {
     display: flex;
     flex-direction: column;
@@ -1288,7 +1288,7 @@ input[type="range"]::-moz-range-thumb {
     font-size: 0.85rem;
 }
 
-/* Column visibility toggles */
+
 .difficulty-column-toggles {
     display: flex;
     gap: 6px;
@@ -1356,7 +1356,7 @@ input[type="range"]::-moz-range-thumb {
     margin-bottom: 0;
 }
 
-/* Separator line between table sections - centered in gap */
+
 .difficulty-table:not(:first-child)::before {
     content: '';
     position: absolute;
@@ -1375,7 +1375,7 @@ input[type="range"]::-moz-range-thumb {
     max-width: 120px;
 }
 
-/* Q column - narrower width */
+
 .difficulty-column-q {
     flex: 0 0 auto;
     min-width: 35px;

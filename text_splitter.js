@@ -421,14 +421,14 @@ function updateSplitterPreview() {
 
     if (previewTag) {
         ctx.save();
-        // 1. Punch a hole in the background (make it transparent)
+        
         ctx.globalCompositeOperation = 'destination-out';
         ctx.fillStyle = 'rgba(0,0,0,1)';
         ctx.fillText(previewTag, centerX, centerY);
         ctx.restore();
 
-        // 2. Draw the text with its intended opacity on top
-        // If opacity is 0, the hole remains transparent
+        
+        
         ctx.fillStyle = hexToRgba(textColorHex, textOpacity / 100);
         ctx.fillText(previewTag, centerX, centerY);
     }
@@ -485,12 +485,12 @@ async function generateSplitterZip() {
         for (const tag of splitterTags) {
             offCtx.clearRect(0, 0, width, height);
 
-            // 1. Draw background
+            
             offCtx.globalCompositeOperation = 'source-over';
             offCtx.fillStyle = hexToRgba(bgColorHex, bgOpacity);
             offCtx.fillRect(0, 0, width, height);
 
-            // 2. Punch a hole (destination-out)
+            
             offCtx.globalCompositeOperation = 'destination-out';
             offCtx.fillStyle = 'rgba(0,0,0,1)';
             offCtx.font = `${height * 0.8 * scale}px "${loadedFontName}"`;
@@ -498,7 +498,7 @@ async function generateSplitterZip() {
             offCtx.textBaseline = 'middle';
             offCtx.fillText(tag, width / 2 + xOffset, height / 2 + yOffset);
 
-            // 3. Draw text color/opacity on top
+            
             offCtx.globalCompositeOperation = 'source-over';
             offCtx.fillStyle = hexToRgba(textColorHex, textOpacity);
             offCtx.fillText(tag, width / 2 + xOffset, height / 2 + yOffset);

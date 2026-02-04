@@ -1,12 +1,12 @@
 
 function showDifficultyConversion(range, sourceType, x, y) {
-    // Remove existing popup if any
+    
     const existingPopup = document.querySelector('.difficulty-conversion-popup');
     if (existingPopup) {
         existingPopup.remove();
     }
 
-    // Get difficulty value based on source type
+    
     let ggValue, tufValue, legacyValue;
 
     if (sourceType === 'gg') {
@@ -27,7 +27,7 @@ function showDifficultyConversion(range, sourceType, x, y) {
         tufValue = tuf.prefix + Math.round(tuf.val);
     }
 
-    // Create popup
+    
     const popup = document.createElement('div');
     popup.className = 'difficulty-conversion-popup';
     popup.innerHTML = `
@@ -46,10 +46,10 @@ function showDifficultyConversion(range, sourceType, x, y) {
         </div>
     `;
 
-    // Position popup near click
+    
     document.body.appendChild(popup);
 
-    // Adjust position to keep popup on screen
+    
     const rect = popup.getBoundingClientRect();
     let left = x + 10;
     let top = y + 10;
@@ -64,7 +64,7 @@ function showDifficultyConversion(range, sourceType, x, y) {
     popup.style.left = left + 'px';
     popup.style.top = top + 'px';
 
-    // Close popup on click outside
+    
     const closePopup = (e) => {
         if (!popup.contains(e.target)) {
             popup.remove();
@@ -72,7 +72,7 @@ function showDifficultyConversion(range, sourceType, x, y) {
         }
     };
 
-    // Delay adding the event listener to avoid immediate closure
+    
     setTimeout(() => {
         document.addEventListener('click', closePopup);
     }, 100);

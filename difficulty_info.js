@@ -18,7 +18,7 @@ for (let i = 200; i <= 209; i++) {
     LEGACY_LEVELS.push(base);
     LEGACY_LEVELS.push(parseFloat((base + 0.05).toFixed(2)));
 }
-// 21 이후: 21, 21+, 21.1, 21.1+, 21.2, 21.2+, 21.3, 21.3+
+
 for (let i = 210; i <= 213; i++) {
     let base = i / 10;
     LEGACY_LEVELS.push(base);
@@ -40,17 +40,17 @@ const TUF_COLORS = {
     'U16': '#181028', 'U17': '#101020', 'U18': '#100810', 'U19': '#080808', 'U20': '#000000'
 };
 
-// Q levels group U levels: Q0=U1-U4, Q1=U5-U8, Q2=U9-U12, Q3=U13-U16, Q4=U17-U20
+
 const Q_LEVELS = ['Q0', 'Q1', 'Q2', 'Q3', 'Q4'];
 const Q_COLORS = {
-    'Q0': '#7850b0', // Same as U1
-    'Q1': '#402860', // Same as U10
-    'Q2': '#201830', // Same as U15
-    'Q3': '#000000', // Same as U20
-    'Q4': '#ffffff'  // White
+    'Q0': '#7850b0', 
+    'Q1': '#402860', 
+    'Q2': '#201830', 
+    'Q3': '#000000', 
+    'Q4': '#ffffff'  
 };
 
-// GG group levels: 20=20.0~20.4, 20+=20.5~20.9, 21=21.0~21.4, 21+=21.5~21.9, 22=22.0~22.4, 22+=22.5~22.6
+
 const GG_GROUP_LEVELS = ['20', '20+', '21', '21+', '22', '22+'];
 const GG_GROUP_RANGES = {
     '20': { min: 20.0, max: 20.4 },
@@ -200,15 +200,15 @@ function formatLegacyLabel(val) {
     if (val === 19.5) return '19+';
     if (Number.isInteger(val)) return val.toString();
     const str = val.toFixed(2);
-    // 21.05 → "21+", 21.15 → "21.1+", 21.25 → "21.2+", etc.
+    
     if (str.endsWith('5')) {
         const baseVal = Math.floor(val);
         const decimal = val - baseVal;
-        // 0.05 → base+, 0.15 → base.1+, 0.25 → base.2+, etc.
+        
         if (Math.abs(decimal - 0.05) < 0.001) {
             return baseVal + '+';
         }
-        // Use floor to avoid rounding: 21.15 → 21.1+, 21.25 → 21.2+
+        
         const firstDecimal = Math.floor((decimal - 0.05) * 10 + 0.001);
         return baseVal + '.' + firstDecimal + '+';
     }
@@ -228,13 +228,13 @@ function calcHeightByGgRange(ggStart, ggEnd, ggRanges, baseHeight) {
         }
     }
 
-    // Calculate uncovered range (extends beyond GG levels)
+    
     const requestedRange = ggEnd - ggStart;
     const uncoveredRange = requestedRange - coveredRange;
 
     if (uncoveredRange > 0) {
-        // Add proportional height for the uncovered portion
-        totalHeight += baseHeight * uncoveredRange / 0.1; // 0.1 is typical GG increment
+        
+        totalHeight += baseHeight * uncoveredRange / 0.1; 
     }
 
     return Math.max(totalHeight, 1);
@@ -249,12 +249,12 @@ function renderDifficultyTable(base = 'gg') {
     let ggRanges, tufRanges, legacyRanges;
 
     if (base === 'gg') {
-        // Double height for GG 20~20.9 section
+        
         ggRanges = buildGgRanges((start) => (start >= 20 && start < 21) ? 2 : 1);
         tufRanges = buildTufRanges();
         legacyRanges = buildLegacyRanges();
     } else if (base === 'legacy') {
-        // Double height for GG 21+ section (which is Legacy 21+)
+        
         ggRanges = buildGgRanges((start) => (start >= 21) ? 2 : 1);
         tufRanges = buildTufRanges();
         legacyRanges = buildLegacyRanges((start) => (start >= 21) ? 2 : 1);
@@ -273,12 +273,12 @@ function renderDifficultyTable(base = 'gg') {
             { name: 'TUF (L)', ranges: legacyRanges, type: 'legacy' }
         ];
         for (const r of tufRanges) {
-            // Double height for G section (20~20.9 range)
+            
             const heightMultiplier = (r.ggStart >= 20 && r.ggStart < 21) ? 2 : 1;
             r.height = calcHeightByGgRange(r.ggStart, r.ggEnd, ggRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
         for (const r of legacyRanges) {
-            // Double height for 20~20.9+ range
+            
             const heightMultiplier = (r.ggStart >= 20 && r.ggStart < 21) ? 2 : 1;
             r.height = calcHeightByGgRange(r.ggStart, r.ggEnd, ggRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
@@ -316,12 +316,12 @@ function renderDifficultyTable(base = 'gg') {
             r.legacyEnd = ggToLegacy(r.ggEnd);
         }
         for (const r of ggRanges) {
-            // Double height for 21~22.6 range (Legacy 21~21.3+)
+            
             const heightMultiplier = (r.legacyStart >= 21) ? 2 : 1;
             r.height = calcHeightByLegacyRange(r.legacyStart, r.legacyEnd, legacyRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
         for (const r of tufRanges) {
-            // Double height for U section (Legacy 21~21.3+)
+            
             const heightMultiplier = (r.legacyStart >= 21) ? 2 : 1;
             r.height = calcHeightByLegacyRange(r.legacyStart, r.legacyEnd, legacyRanges, DIFFICULTY_BASE_HEIGHT * heightMultiplier);
         }
@@ -332,11 +332,11 @@ function renderDifficultyTable(base = 'gg') {
         ];
     }
 
-    // Define better section boundaries based on difficulty tiers
+    
     const baseColumn = columns[0];
     let sectionBoundaries;
     if (base === 'gg') {
-        // For GG: split at 20.0 and 21.0 (P/G/U boundaries)
+        
         const idx20 = baseColumn.ranges.findIndex(r => r.start >= 20);
         const idx21 = baseColumn.ranges.findIndex(r => r.start >= 21);
         sectionBoundaries = [
@@ -345,7 +345,7 @@ function renderDifficultyTable(base = 'gg') {
             { start: idx21, end: baseColumn.ranges.length }
         ];
     } else if (base === 'tuf') {
-        // For TUF: split by prefix (P, G, U)
+        
         const idxG = baseColumn.ranges.findIndex(r => r.label[0] === 'G');
         const idxU = baseColumn.ranges.findIndex(r => r.label[0] === 'U');
         sectionBoundaries = [
@@ -354,7 +354,7 @@ function renderDifficultyTable(base = 'gg') {
             { start: idxU, end: baseColumn.ranges.length }
         ];
     } else if (base === 'legacy') {
-        // For Legacy: split at 20.0 and 21.0
+        
         const idx20 = baseColumn.ranges.findIndex(r => r.start >= 20);
         const idx21 = baseColumn.ranges.findIndex(r => r.start >= 21);
         sectionBoundaries = [
@@ -364,7 +364,7 @@ function renderDifficultyTable(base = 'gg') {
         ];
     }
 
-    // Create 3 table sections (horizontally arranged)
+    
     for (let section = 0; section < 3; section++) {
         const startIdx = sectionBoundaries[section].start;
         const endIdx = sectionBoundaries[section].end;
@@ -377,10 +377,10 @@ function renderDifficultyTable(base = 'gg') {
         for (let colIdx = 0; colIdx < columns.length; colIdx++) {
             const col = columns[colIdx];
 
-            // Check if this column should be visible
+            
             const visibleColumns = getVisibleColumns();
             if (!visibleColumns[col.type]) {
-                continue; // Skip hidden columns
+                continue; 
             }
 
             const colDiv = document.createElement('div');
@@ -396,15 +396,15 @@ function renderDifficultyTable(base = 'gg') {
 
             let sectionRanges;
             if (colIdx === 0) {
-                // Base column: just slice normally
+                
                 sectionRanges = col.ranges.slice(startIdx, endIdx);
             } else {
-                // Other columns: filter by base column's range
+                
                 const baseStart = baseColumn.ranges[startIdx];
                 const baseEnd = baseColumn.ranges[endIdx - 1];
 
                 if (base === 'gg') {
-                    // Base is GG, filter by ggStart/ggEnd
+                    
                     const minGg = baseStart.start;
                     const maxGg = baseEnd.end;
                     const isLastSection = (section === 2);
@@ -415,24 +415,24 @@ function renderDifficultyTable(base = 'gg') {
                         return r.ggStart >= minGg && r.ggStart < maxGg;
                     });
                 } else if (base === 'tuf') {
-                    // Base is TUF, filter by tufStart/tufEnd
+                    
                     const minTuf = tufToIndex({ prefix: baseStart.label[0], val: parseInt(baseStart.label.substring(1)) });
                     const maxTuf = tufToIndex({ prefix: baseEnd.label[0], val: parseInt(baseEnd.label.substring(1)) + 1 });
                     sectionRanges = col.ranges.filter(r => {
                         let rStart;
                         if (col.type === 'tuf') {
-                            // This shouldn't happen as TUF is base
+                            
                             rStart = tufToIndex({ prefix: r.label[0], val: parseInt(r.label.substring(1)) });
                         } else {
-                            // GG or Legacy column
+                            
                             rStart = tufToIndex(r.tufStart);
                         }
                         return rStart >= minTuf && rStart < maxTuf;
                     });
                 } else if (base === 'legacy') {
-                    // Base is Legacy, filter by legacyStart/legacyEnd
+                    
                     const minLegacy = baseStart.start;
-                    // For the last section, include everything beyond the last legacy level
+                    
                     const maxLegacy = (section === 2) ? 999 : (baseEnd.start + 0.05);
                     sectionRanges = col.ranges.filter(r => {
                         return r.legacyStart >= minLegacy && r.legacyStart < maxLegacy;
@@ -447,10 +447,10 @@ function renderDifficultyTable(base = 'gg') {
                 box.style.background = r.color;
                 box.textContent = r.label;
 
-                // Use dark text for bright backgrounds
+                
                 let useDarkText = false;
                 if (col.type === 'tuf') {
-                    // TUF P1-P15 have bright backgrounds
+                    
                     if (r.label && r.label.startsWith('P')) {
                         const pNum = parseInt(r.label.substring(1));
                         if (pNum >= 1 && pNum <= 15) {
@@ -458,7 +458,7 @@ function renderDifficultyTable(base = 'gg') {
                         }
                     }
                 } else if (col.type === 'legacy') {
-                    // Legacy 1-14 have bright backgrounds
+                    
                     if (typeof r.start === 'number' && r.start >= 1 && r.start <= 14) {
                         useDarkText = true;
                     }
@@ -468,28 +468,28 @@ function renderDifficultyTable(base = 'gg') {
                     box.style.textShadow = 'none';
                 }
 
-                // Add small gap at tier boundaries (21.1, 21.2, 21.3)
+                
                 const tierBoundaries = [21.1, 21.2, 21.3];
                 let addGap = false;
                 if (col.type === 'legacy') {
                     addGap = tierBoundaries.includes(r.start);
                 } else if (col.type === 'gg') {
-                    // GG levels corresponding to legacy boundaries
+                    
                     const ggBoundaries = [21.5, 22, 22.5];
                     addGap = ggBoundaries.includes(r.start);
                 } else if (col.type === 'tuf') {
-                    // TUF levels U5, U9, U13 (correspond to GG 21.5, 22, 22.5)
+                    
                     addGap = ['U5', 'U9', 'U13'].includes(r.label);
                 }
                 if (addGap) {
                     box.style.marginTop = '4px';
                 }
 
-                // Add hover event for conversion popup
+                
                 box.addEventListener('mouseenter', (e) => {
                     const rect = box.getBoundingClientRect();
                     showDifficultyConversion(r, col.type, rect.right + 10, rect.top);
-                    // Show line across this table section's columns only
+                    
                     const columns = table.querySelectorAll('.difficulty-column');
                     if (columns.length > 0) {
                         const firstCol = columns[0].getBoundingClientRect();
@@ -503,7 +503,7 @@ function renderDifficultyTable(base = 'gg') {
                     hideHighlightLine();
                 });
 
-                // Add click event to fill converter
+                
                 box.addEventListener('click', () => {
                     fillConverterWithDifficulty(r, col.type);
                 });
@@ -514,9 +514,9 @@ function renderDifficultyTable(base = 'gg') {
             colDiv.appendChild(body);
             table.appendChild(colDiv);
 
-            // Add Q column after TUF column in U section only
+            
             if (col.type === 'tuf' && visibleColumns.q) {
-                // Check if this section contains U levels
+                
                 const hasULevels = sectionRanges.some(r => r.label && r.label.startsWith('U'));
                 if (hasULevels) {
                     const qColDiv = document.createElement('div');
@@ -530,23 +530,23 @@ function renderDifficultyTable(base = 'gg') {
                     const qBody = document.createElement('div');
                     qBody.className = 'difficulty-column-body';
 
-                    // Filter only U levels from sectionRanges
+                    
                     const uLevels = sectionRanges.filter(r => r.label && r.label.startsWith('U'));
 
-                    // Group U levels into Q groups (4 levels each)
+                    
                     for (let qIdx = 0; qIdx < Q_LEVELS.length; qIdx++) {
                         const qLabel = Q_LEVELS[qIdx];
-                        const uStartNum = qIdx * 4 + 1; // Q0: 1-4, Q1: 5-8, etc.
+                        const uStartNum = qIdx * 4 + 1; 
                         const uEndNum = uStartNum + 3;
 
-                        // Find U levels that belong to this Q group
+                        
                         const groupULevels = uLevels.filter(r => {
                             const uNum = parseInt(r.label.substring(1));
                             return uNum >= uStartNum && uNum <= uEndNum;
                         });
 
                         if (groupULevels.length > 0) {
-                            // Calculate total height for this Q box (sum of U level heights only)
+                            
                             let qHeight = 0;
                             groupULevels.forEach(r => {
                                 qHeight += r.height;
@@ -558,21 +558,21 @@ function renderDifficultyTable(base = 'gg') {
                             qBox.style.background = Q_COLORS[qLabel] || '#666';
                             qBox.textContent = qLabel;
 
-                            // Add text color for Q3 and Q4 (red)
+                            
                             if (qLabel === 'Q3' || qLabel === 'Q4') {
                                 qBox.style.color = '#FF0000';
                                 qBox.style.textShadow = 'none';
                             }
 
-                            // Add gap for Q1, Q2, Q3, Q4 (same as U5, U9, U13, U17)
+                            
                             if (qIdx > 0) {
                                 qBox.style.marginTop = '4px';
                             }
 
-                            // Add hover event for highlight line
+                            
                             qBox.addEventListener('mouseenter', () => {
                                 const rect = qBox.getBoundingClientRect();
-                                // Show line across this table section's columns
+                                
                                 const columns = table.querySelectorAll('.difficulty-column');
                                 if (columns.length > 0) {
                                     const firstCol = columns[0].getBoundingClientRect();
@@ -594,9 +594,9 @@ function renderDifficultyTable(base = 'gg') {
                 }
             }
 
-            // Add GG Group column after ADOFAI.gg column in 20+ section only
+            
             if (col.type === 'gg' && visibleColumns.gg_group) {
-                // Check if this section contains 20+ levels
+                
                 const has20PlusLevels = sectionRanges.some(r => r.start >= 20);
                 if (has20PlusLevels) {
                     const ggGroupColDiv = document.createElement('div');
@@ -610,21 +610,21 @@ function renderDifficultyTable(base = 'gg') {
                     const ggGroupBody = document.createElement('div');
                     ggGroupBody.className = 'difficulty-column-body';
 
-                    // Filter only 20+ levels from sectionRanges
+                    
                     const gg20PlusLevels = sectionRanges.filter(r => r.start >= 20);
 
-                    // Group GG levels into groups
+                    
                     for (let gIdx = 0; gIdx < GG_GROUP_LEVELS.length; gIdx++) {
                         const gLabel = GG_GROUP_LEVELS[gIdx];
                         const gRange = GG_GROUP_RANGES[gLabel];
 
-                        // Find GG levels that belong to this group
+                        
                         const groupGGLevels = gg20PlusLevels.filter(r => {
                             return r.start >= gRange.min && r.start <= gRange.max;
                         });
 
                         if (groupGGLevels.length > 0) {
-                            // Calculate total height for this group box
+                            
                             let gHeight = 0;
                             groupGGLevels.forEach(r => {
                                 gHeight += r.height;
@@ -636,7 +636,7 @@ function renderDifficultyTable(base = 'gg') {
                             gBox.style.background = GG_GROUP_COLORS[gLabel] || '#666';
                             gBox.textContent = gLabel;
 
-                            // Add hover event for highlight line
+                            
                             gBox.addEventListener('mouseenter', () => {
                                 const rect = gBox.getBoundingClientRect();
                                 const columns = table.querySelectorAll('.difficulty-column');
@@ -651,7 +651,7 @@ function renderDifficultyTable(base = 'gg') {
                                 hideHighlightLine();
                             });
 
-                            // Add gap for groups that start at tier boundaries (21.5, 22.0, 22.5)
+                            
                             if (['21+', '22', '22+'].includes(gLabel)) {
                                 gBox.style.marginTop = '4px';
                             }
@@ -702,10 +702,10 @@ function calcHeightByLegacyRange(legacyStart, legacyEnd, legacyRanges, baseHeigh
             totalHeight += baseHeight * ratio;
         }
     }
-    // If no overlap found (e.g., range is beyond Legacy levels), use proportional height
+    
     if (totalHeight === 0) {
         const legacyRange = legacyEnd - legacyStart;
-        totalHeight = baseHeight * legacyRange / 0.05; // 0.05 is typical Legacy increment for high levels
+        totalHeight = baseHeight * legacyRange / 0.05; 
     }
     return Math.max(totalHeight, 1);
 }
@@ -727,10 +727,10 @@ function initDifficultyInfo() {
     renderDifficultyTable('gg');
 }
 
-// Column definitions for each base type (in display order, excluding base column)
+
 function getColumnOrder(base) {
     if (base === 'gg') {
-        // Table order: ADOFAI.gg | N | TUF | Q | TUF(L)
+        
         return [
             { key: 'gg_group', name: 'N' },
             { key: 'tuf', name: 'TUF' },
@@ -738,15 +738,15 @@ function getColumnOrder(base) {
             { key: 'legacy', name: 'TUF (L)' }
         ];
     } else if (base === 'tuf') {
-        // Table order: TUF | Q | ADOFAI.gg | N | TUF(L)
+        
         return [
             { key: 'q', name: 'Q' },
             { key: 'gg', name: 'ADOFAI.gg' },
             { key: 'gg_group', name: 'N' },
             { key: 'legacy', name: 'TUF (L)' }
         ];
-    } else { // legacy
-        // Table order: TUF(L) | ADOFAI.gg | N | TUF | Q
+    } else { 
+        
         return [
             { key: 'gg', name: 'ADOFAI.gg' },
             { key: 'gg_group', name: 'N' },
@@ -756,7 +756,7 @@ function getColumnOrder(base) {
     }
 }
 
-// Store visibility state globally
+
 let columnVisibility = { gg: true, gg_group: true, tuf: true, q: true, legacy: true };
 
 function renderColumnToggles(base) {
@@ -765,13 +765,13 @@ function renderColumnToggles(base) {
 
     togglesContainer.innerHTML = '';
 
-    // Add label
+    
     const label = document.createElement('span');
     label.className = 'toggle-label-text';
     label.textContent = t('difficulty_info.show_columns');
     togglesContainer.appendChild(label);
 
-    // Add toggle buttons in order (excluding base column)
+    
     const columnOrder = getColumnOrder(base);
     for (const col of columnOrder) {
         const btn = document.createElement('button');
@@ -804,7 +804,7 @@ function getCurrentBase() {
 function getVisibleColumns() {
     const base = getCurrentBase();
     const visible = { ...columnVisibility };
-    // Base column is always visible
+    
     visible[base] = true;
     return visible;
 }
@@ -904,7 +904,7 @@ function fillConverterWithDifficulty(range, sourceType) {
         if (legacyInput) legacyInput.value = range.start;
     }
 
-    // Trigger input event to update other fields
+    
     if (sourceType === 'gg' && ggInput) {
         ggInput.dispatchEvent(new Event('input', { bubbles: true }));
     } else if (sourceType === 'tuf' && tufInput) {
@@ -914,7 +914,7 @@ function fillConverterWithDifficulty(range, sourceType) {
     }
 
 
-    // Scroll to Level Converter section
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 

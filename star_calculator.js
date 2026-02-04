@@ -142,7 +142,7 @@ function drawVisualization(angles, isReverse) {
     const rect = canvas.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return;
 
-    // Use devicePixelRatio for sharp drawing
+    
     const dpr = window.devicePixelRatio || 1;
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
@@ -189,7 +189,7 @@ function drawVisualization(angles, isReverse) {
         if (p.y > maxY) maxY = p.y;
     });
 
-    const padding = 50; // 적절한 여백을 위해 패딩 증가
+    const padding = 50; 
     const pathWidth = maxX - minX;
     const pathHeight = maxY - minY;
 
@@ -200,7 +200,7 @@ function drawVisualization(angles, isReverse) {
         (rect.height - padding * 2) / pathHeight
     );
 
-    // 완벽한 중앙 정렬 계산
+    
     const offsetX = (rect.width - pathWidth * scale) / 2 - minX * scale;
     const offsetY = (rect.height - pathHeight * scale) / 2 - minY * scale;
 
@@ -214,7 +214,7 @@ function drawVisualization(angles, isReverse) {
     }
     ctx.stroke();
 
-    ctx.shadowBlur = 0; // 점에는 그림자 제외
+    ctx.shadowBlur = 0; 
     ctx.fillStyle = pointColor;
     for (let i = 0; i < points.length; i++) {
         const p = points[i];
