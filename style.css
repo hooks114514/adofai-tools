@@ -50,9 +50,9 @@ html {
 .main-wrapper {
     display: flex;
     gap: 20px;
-    width: 90%;
-    max-width: 1000px;
+    width: 1000px;
     align-items: flex-start;
+    flex-shrink: 0;
 }
 
 .container {
@@ -552,8 +552,7 @@ canvas {
     gap: 10px;
     margin-bottom: 20px;
     z-index: 10;
-    width: 90%;
-    max-width: 1000px;
+    width: 1000px;
 }
 
 .nav-tab {
@@ -761,19 +760,7 @@ canvas {
 }
 
 
-@media (max-width: 800px) {
-    .main-wrapper {
-        flex-direction: column;
-        height: auto;
-        padding-bottom: 20px;
-    }
 
-    .container,
-    .visual-container {
-        width: 100%;
-        min-height: 400px;
-    }
-}
 
 
 .modal {
@@ -1054,10 +1041,9 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .splitter-wrapper {
+    width: 1400px !important;
     max-width: 1400px !important;
-    width: 95% !important;
     height: 780px;
-
 }
 
 .splitter-wrapper .container {
@@ -1256,7 +1242,7 @@ input[type="range"]::-moz-range-thumb {
 
 .difficulty-info-container {
     max-width: 1400px;
-    width: 95%;
+    width: 1400px;
     margin: 20px auto;
     background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(10px);

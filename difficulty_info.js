@@ -41,13 +41,22 @@ const TUF_COLORS = {
 };
 
 
-const Q_LEVELS = ['Q0', 'Q1', 'Q2', 'Q3', 'Q4'];
-const Q_COLORS = {
-    'Q0': '#7850b0',
-    'Q1': '#402860',
-    'Q2': '#201830',
-    'Q3': '#000000',
-    'Q4': '#ffffff'
+const UQ_LEVELS = ['UQ0', 'UQ1', 'UQ2', 'UQ3', 'UQ4'];
+const UQ_COLORS = {
+    'UQ0': '#7850b0',
+    'UQ1': '#402860',
+    'UQ2': '#201830',
+    'UQ3': '#000000',
+    'UQ4': '#ffffff'
+};
+
+const GQ_LEVELS = ['GQ0', 'GQ1', 'GQ2', 'GQ3', 'GQ4'];
+const GQ_COLORS = {
+    'GQ0': '#f0a800',
+    'GQ1': '#e88820',
+    'GQ2': '#e86040',
+    'GQ3': '#e04060',
+    'GQ4': '#d81880'
 };
 
 
@@ -240,7 +249,8 @@ function calcHeightByGgRange(ggStart, ggEnd, ggRanges, baseHeight) {
     return Math.max(totalHeight, 1);
 }
 
-function renderDifficultyTable(base = 'gg') {
+function renderDifficultyTable() {
+    const base = 'gg';
     const wrapper = document.getElementById('difficulty-table-wrapper');
     if (!wrapper) return;
 
@@ -453,13 +463,13 @@ function renderDifficultyTable(base = 'gg') {
 
                     if (r.label && r.label.startsWith('P')) {
                         const pNum = parseInt(r.label.substring(1));
-                        if (pNum >= 1 && pNum <= 15) {
+                        if (pNum >= 1 && pNum <= 20) {
                             useDarkText = true;
                         }
                     }
                 } else if (col.type === 'legacy') {
 
-                    if (typeof r.start === 'number' && r.start >= 1 && r.start <= 14) {
+                    if (typeof r.start === 'number' && r.start >= 1 && r.start <= 10) {
                         useDarkText = true;
                     }
                 }
@@ -519,66 +529,49 @@ function renderDifficultyTable(base = 'gg') {
             table.appendChild(colDiv);
 
 
-            if (col.type === 'tuf' && visibleColumns.q) {
+            if (col.type === 'tuf') {
 
-                const hasULevels = sectionRanges.some(r => r.label && r.label.startsWith('U'));
-                if (hasULevels) {
-                    const qColDiv = document.createElement('div');
-                    qColDiv.className = 'difficulty-column difficulty-column-q';
+                const hasGLevels = sectionRanges.some(r => r.label && r.label.startsWith('G'));
+                if (hasGLevels && visibleColumns.gq) {
+                    const gqColDiv = document.createElement('div');
+                    gqColDiv.className = 'difficulty-column difficulty-column-q';
 
-                    const qHeader = document.createElement('div');
-                    qHeader.className = 'difficulty-column-header';
-                    qHeader.textContent = 'Q';
-                    qColDiv.appendChild(qHeader);
+                    const gqHeader = document.createElement('div');
+                    gqHeader.className = 'difficulty-column-header';
+                    gqHeader.textContent = 'GQ';
+                    gqColDiv.appendChild(gqHeader);
 
-                    const qBody = document.createElement('div');
-                    qBody.className = 'difficulty-column-body';
+                    const gqBody = document.createElement('div');
+                    gqBody.className = 'difficulty-column-body';
 
+                    const gLevels = sectionRanges.filter(r => r.label && r.label.startsWith('G'));
 
-                    const uLevels = sectionRanges.filter(r => r.label && r.label.startsWith('U'));
+                    for (let gIdx = 0; gIdx < GQ_LEVELS.length; gIdx++) {
+                        const gqLabel = GQ_LEVELS[gIdx];
+                        const gStartNum = gIdx * 4 + 1;
+                        const gEndNum = gStartNum + 3;
 
-
-                    for (let qIdx = 0; qIdx < Q_LEVELS.length; qIdx++) {
-                        const qLabel = Q_LEVELS[qIdx];
-                        const uStartNum = qIdx * 4 + 1;
-                        const uEndNum = uStartNum + 3;
-
-
-                        const groupULevels = uLevels.filter(r => {
-                            const uNum = parseInt(r.label.substring(1));
-                            return uNum >= uStartNum && uNum <= uEndNum;
+                        const groupGLevels = gLevels.filter(r => {
+                            const gNum = parseInt(r.label.substring(1));
+                            return gNum >= gStartNum && gNum <= gEndNum;
                         });
 
-                        if (groupULevels.length > 0) {
-
-                            let qHeight = 0;
-                            groupULevels.forEach(r => {
-                                qHeight += r.height;
+                        if (groupGLevels.length > 0) {
+                            let gqHeight = 0;
+                            groupGLevels.forEach(r => {
+                                gqHeight += r.height;
                             });
 
-                            const qBox = document.createElement('div');
-                            qBox.className = 'difficulty-box difficulty-box-q';
-                            qBox.style.height = qHeight + 'px';
-                            qBox.style.background = Q_COLORS[qLabel] || '#666';
-                            qBox.textContent = qLabel;
+                            const gqBox = document.createElement('div');
+                            gqBox.className = 'difficulty-box difficulty-box-q';
+                            gqBox.style.height = gqHeight + 'px';
+                            gqBox.style.background = GQ_COLORS[gqLabel] || '#666';
+                            gqBox.textContent = gqLabel;
 
-
-                            if (qLabel === 'Q3' || qLabel === 'Q4') {
-                                qBox.style.color = '#FF0000';
-                                qBox.style.textShadow = 'none';
-                            }
-
-
-                            if (qIdx > 0) {
-                                qBox.style.marginTop = '4px';
-                            }
-
-
-                            qBox.addEventListener('mouseenter', () => {
-                                const rect = qBox.getBoundingClientRect();
+                            gqBox.addEventListener('mouseenter', () => {
+                                const rect = gqBox.getBoundingClientRect();
                                 const zoom = 0.9;
                                 const topPos = (rect.top + window.scrollY) / zoom;
-
                                 const columns = table.querySelectorAll('.difficulty-column');
                                 if (columns.length > 0) {
                                     const firstCol = columns[0].getBoundingClientRect();
@@ -587,16 +580,86 @@ function renderDifficultyTable(base = 'gg') {
                                 }
                             });
 
-                            qBox.addEventListener('mouseleave', () => {
+                            gqBox.addEventListener('mouseleave', () => {
                                 hideHighlightLine();
                             });
 
-                            qBody.appendChild(qBox);
+                            gqBody.appendChild(gqBox);
                         }
                     }
 
-                    qColDiv.appendChild(qBody);
-                    table.appendChild(qColDiv);
+                    gqColDiv.appendChild(gqBody);
+                    table.appendChild(gqColDiv);
+                }
+
+                const hasULevels = sectionRanges.some(r => r.label && r.label.startsWith('U'));
+                if (hasULevels && visibleColumns.uq) {
+                    const uqColDiv = document.createElement('div');
+                    uqColDiv.className = 'difficulty-column difficulty-column-q';
+
+                    const uqHeader = document.createElement('div');
+                    uqHeader.className = 'difficulty-column-header';
+                    uqHeader.textContent = 'UQ';
+                    uqColDiv.appendChild(uqHeader);
+
+                    const uqBody = document.createElement('div');
+                    uqBody.className = 'difficulty-column-body';
+
+                    const uLevels = sectionRanges.filter(r => r.label && r.label.startsWith('U'));
+
+                    for (let uIdx = 0; uIdx < UQ_LEVELS.length; uIdx++) {
+                        const uqLabel = UQ_LEVELS[uIdx];
+                        const uStartNum = uIdx * 4 + 1;
+                        const uEndNum = uStartNum + 3;
+
+                        const groupULevels = uLevels.filter(r => {
+                            const uNum = parseInt(r.label.substring(1));
+                            return uNum >= uStartNum && uNum <= uEndNum;
+                        });
+
+                        if (groupULevels.length > 0) {
+                            let uqHeight = 0;
+                            groupULevels.forEach(r => {
+                                uqHeight += r.height;
+                            });
+
+                            const uqBox = document.createElement('div');
+                            uqBox.className = 'difficulty-box difficulty-box-q';
+                            uqBox.style.height = uqHeight + 'px';
+                            uqBox.style.background = UQ_COLORS[uqLabel] || '#666';
+                            uqBox.textContent = uqLabel;
+
+                            if (uqLabel === 'UQ3' || uqLabel === 'UQ4') {
+                                uqBox.style.color = '#FF0000';
+                                uqBox.style.textShadow = 'none';
+                            }
+
+                            if (uIdx > 0) {
+                                uqBox.style.marginTop = '4px';
+                            }
+
+                            uqBox.addEventListener('mouseenter', () => {
+                                const rect = uqBox.getBoundingClientRect();
+                                const zoom = 0.9;
+                                const topPos = (rect.top + window.scrollY) / zoom;
+                                const columns = table.querySelectorAll('.difficulty-column');
+                                if (columns.length > 0) {
+                                    const firstCol = columns[0].getBoundingClientRect();
+                                    const lastCol = columns[columns.length - 1].getBoundingClientRect();
+                                    showHighlightLine(topPos, (firstCol.left + window.scrollX) / zoom, (lastCol.right + window.scrollX) / zoom);
+                                }
+                            });
+
+                            uqBox.addEventListener('mouseleave', () => {
+                                hideHighlightLine();
+                            });
+
+                            uqBody.appendChild(uqBox);
+                        }
+                    }
+
+                    uqColDiv.appendChild(uqBody);
+                    table.appendChild(uqColDiv);
                 }
             }
 
@@ -720,20 +783,8 @@ function calcHeightByLegacyRange(legacyStart, legacyEnd, legacyRanges, baseHeigh
 }
 
 function initDifficultyInfo() {
-    const selector = document.getElementById('difficulty-base-selector');
-    if (selector) {
-        selector.querySelectorAll('.segment-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                selector.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                renderColumnToggles(btn.dataset.base);
-                renderDifficultyTable(btn.dataset.base);
-            });
-        });
-    }
-
     renderColumnToggles('gg');
-    renderDifficultyTable('gg');
+    renderDifficultyTable();
 }
 
 
@@ -743,13 +794,15 @@ function getColumnOrder(base) {
         return [
             { key: 'gg_group', name: 'N' },
             { key: 'tuf', name: 'TUF' },
-            { key: 'q', name: 'Q' },
+            { key: 'gq', name: 'GQ' },
+            { key: 'uq', name: 'UQ' },
             { key: 'legacy', name: 'TUF (L)' }
         ];
     } else if (base === 'tuf') {
 
         return [
-            { key: 'q', name: 'Q' },
+            { key: 'gq', name: 'GQ' },
+            { key: 'uq', name: 'UQ' },
             { key: 'gg', name: 'ADOFAI.gg' },
             { key: 'gg_group', name: 'N' },
             { key: 'legacy', name: 'TUF (L)' }
@@ -760,15 +813,17 @@ function getColumnOrder(base) {
             { key: 'gg', name: 'ADOFAI.gg' },
             { key: 'gg_group', name: 'N' },
             { key: 'tuf', name: 'TUF' },
-            { key: 'q', name: 'Q' }
+            { key: 'gq', name: 'GQ' },
+            { key: 'uq', name: 'UQ' }
         ];
     }
 }
 
 
-let columnVisibility = { gg: true, gg_group: true, tuf: true, q: true, legacy: true };
+let columnVisibility = { gg: true, gg_group: true, tuf: true, gq: true, uq: true, legacy: true };
 
-function renderColumnToggles(base) {
+function renderColumnToggles() {
+    const base = 'gg';
     const togglesContainer = document.getElementById('difficulty-column-toggles');
     if (!togglesContainer) return;
 
@@ -796,22 +851,15 @@ function renderColumnToggles(base) {
         btn.addEventListener('click', () => {
             columnVisibility[col.key] = !columnVisibility[col.key];
             btn.classList.toggle('active');
-            renderDifficultyTable(getCurrentBase());
+            renderDifficultyTable();
         });
 
         togglesContainer.appendChild(btn);
     }
 }
 
-function getCurrentBase() {
-    const selector = document.getElementById('difficulty-base-selector');
-    if (!selector) return 'gg';
-    const activeBtn = selector.querySelector('.segment-btn.active');
-    return activeBtn ? activeBtn.dataset.base : 'gg';
-}
-
 function getVisibleColumns() {
-    const base = getCurrentBase();
+    const base = 'gg';
     const visible = { ...columnVisibility };
 
     visible[base] = true;
