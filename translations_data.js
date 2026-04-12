@@ -7,7 +7,7 @@ const TRANSLATIONS = {
         },
         "star_calculator": {
             "title": "Star Calculator",
-            "help_content": "**⭐ Star Calculator**\n\nA tool used to create star patterns in ADOFAI.\n\n**📐 Angle Result**\nDisplays the actual angles as they are.\nEnter them in order into the angle input fields of the level editor to complete the star shape.\n\n**📄 .adofai Result**\nThe result converted to fit the angleData format within a .adofai file.\nCopy the result, open the .adofai file, and paste it into angleData to create the set star.\n\n**❓ Formula**\n180 + (180 - 180 / (**A** / 2)) / **B**\n\n• **A**: Pseudo Per Round\n• **B**: Pseudo Interval",
+            "help_content": "**⭐ Star Calculator**\n\nA tool used to create star patterns in ADOFAI.\n\n**📐 Angle Result**\nDisplays the actual angles as they are.\nEnter them in order into the angle input fields of the level editor to complete the star shape.\n\n**📄 .adofai Result**\nThe result converted to fit the angleData format within a .adofai file.\nCopy the result, open the .adofai file, and paste it into angleData to create the set star.\n\n**❓ Formula**\n180 + (180 - 360 / **A**) / **B**\n\n• **A**: Pseudo Per Round\n• **B**: Pseudo Interval",
             "help_footer": "Formula provided: Ceria (Thanks!)",
             "pseudo_per_round": "Pseudo Per Round",
             "pseudo_interval": "Pseudo Interval",
@@ -89,7 +89,7 @@ const TRANSLATIONS = {
         },
         "star_calculator": {
             "title": "별 계산기",
-            "help_content": "**⭐ 별 계산기**\n\nADOFAI에서 별 패턴을 만드는 데 사용하는 도구입니다.\n\n**📐 각도 결과**\n실제 각도를 그대로 표시합니다.\n레벨 에디터의 자유 각도 입력칸에 순서대로 입력하면 별 모양이 완성됩니다.\n\n**📄 .adofai 결과**\n.adofai 파일 내의 angleData 형식에 맞게 변환한 결과입니다.\n결과를 복사한 뒤 .adofai 파일을 열어 angleData에 붙여 넣으면 설정한 별이 생성됩니다.\n\n**❓ 계산 공식**\n180 + (180 - 180 / (**A** / 2)) / **B**\n\n• **A**: 한 바퀴 당 동시치기 수\n• **B**: 동시치기 간격",
+            "help_content": "**⭐ 별 계산기**\n\nADOFAI에서 별 패턴을 만드는 데 사용하는 도구입니다.\n\n**📐 각도 결과**\n실제 각도를 그대로 표시합니다.\n레벨 에디터의 자유 각도 입력칸에 순서대로 입력하면 별 모양이 완성됩니다.\n\n**📄 .adofai 결과**\n.adofai 파일 내의 angleData 형식에 맞게 변환한 결과입니다.\n결과를 복사한 뒤 .adofai 파일을 열어 angleData에 붙여 넣으면 설정한 별이 생성됩니다.\n\n**❓ 계산 공식**\n180 + (180 - 360 / **A**) / **B**\n\n• **A**: 한 바퀴 당 동시치기 수\n• **B**: 동시치기 간격",
             "help_footer": "공식 제공: Ceria (감사합니다!)",
             "pseudo_per_round": "한 바퀴 당 동시치기 수",
             "pseudo_interval": "동시치기 간격",
