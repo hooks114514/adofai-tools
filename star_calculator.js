@@ -43,9 +43,8 @@ function calculate() {
     let pAngle = parseFloat(pAngleInput.value);
     let pReverse = pReverseInput.checked;
 
-    if (pCount < 0) pCount = 0;
-    if (pCount > 100) pCount = 100;
-    pCountInput.value = pCount;
+    if (pCount < 0) { pCount = 0; pCountInput.value = pCount; }
+    if (pCount > 100) { pCount = 100; pCountInput.value = pCount; }
 
     if (pInterval < 1) pInterval = 1;
     if (pInterval > 100) pInterval = 100;
